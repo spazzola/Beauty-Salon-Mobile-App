@@ -1,5 +1,6 @@
 package pomalowane.user;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,23 +21,25 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false)
+    @NotNull
     private String login;
 
-    @Column(nullable = false)
+    @NotNull
     private String password;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private String surname;
 
+    @NotNull
     private String phoneNumber;
 
+    @NotNull
     private String mail;
 
-    @Column(nullable = false)
+    @NotNull
     private String role;
 
 }

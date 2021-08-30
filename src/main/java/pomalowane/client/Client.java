@@ -1,5 +1,6 @@
 package pomalowane.client;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,14 +21,16 @@ public class Client {
     @Column(name = "client_id")
     private Long id;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private String surname;
 
+    @NotNull
     private String phoneNumber;
 
+    @NotNull
     private String mail;
 
 }

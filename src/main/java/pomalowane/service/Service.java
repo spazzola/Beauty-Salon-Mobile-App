@@ -1,13 +1,15 @@
 package pomalowane.service;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pomalowane.appointment.appointmentdetails.AppointmentDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
@@ -18,7 +20,18 @@ import java.math.BigDecimal;
 public class Service {
 
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "service_id")
+    private Long id;
+
+    @NotNull
     private String name;
+
+    @NotNull
     private BigDecimal price;
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    private List<AppointmentDetails> appointmentDetails;
 
 }
