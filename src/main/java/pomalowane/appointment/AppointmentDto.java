@@ -10,6 +10,7 @@ import pomalowane.client.ClientDto;
 import pomalowane.user.User;
 import pomalowane.user.UserDto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class AppointmentDto {
     private LocalDateTime startDate;
     private LocalDateTime finishDate;
     private List<AppointmentDetailsDto> appointmentDetails;
+    private BigDecimal worksSum;
     private ClientDto client;
     private UserDto employee;
 

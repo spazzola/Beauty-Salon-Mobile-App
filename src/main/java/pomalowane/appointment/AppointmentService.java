@@ -20,14 +20,10 @@ import java.util.List;
 @Service
 public class AppointmentService {
 
-    private UserMapper userMapper;
     private UserDao userDao;
     private ClientDao clientDao;
-    private ClientMapper clientMapper;
     private WorkDao workDao;
     private AppointmentDao appointmentDao;
-    private AppointmentDetailsMapper appointmentDetailsMapper;
-    private FromDtoService fromDtoService;
 
     public Appointment createAppointment(CreateAppointmentRequest createAppointmentRequest) throws Exception {
         Client client = clientDao.findById(createAppointmentRequest.getClientId())

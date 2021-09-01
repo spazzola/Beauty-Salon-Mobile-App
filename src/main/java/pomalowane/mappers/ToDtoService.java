@@ -45,6 +45,7 @@ public class ToDtoService {
                 .id(appointment.getId())
                 .startDate(appointment.getStartDate())
                 .finishDate(appointment.getFinishDate())
+                .worksSum(appointment.getWorksSum())
                 .appointmentDetails(appointmentDetailsDto)
                 .client(clientDto)
                 .employee(userDto)
