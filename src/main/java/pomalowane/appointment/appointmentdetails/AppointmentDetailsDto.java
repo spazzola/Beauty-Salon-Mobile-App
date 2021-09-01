@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pomalowane.appointment.Appointment;
 import pomalowane.appointment.AppointmentDto;
-import pomalowane.service.Service;
-import pomalowane.service.ServiceDto;
+import pomalowane.work.WorkDto;
 
 @Data
 @Builder
@@ -16,7 +14,6 @@ import pomalowane.service.ServiceDto;
 public class AppointmentDetailsDto {
 
     private Long id;
-    private AppointmentDto appointment;
-    private ServiceDto service;
+    private WorkDto service;
 
 }

@@ -3,17 +3,13 @@ package pomalowane.appointment;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
-import pomalowane.appointment.appointmentdetails.AppointmentDetailsDto;
-import pomalowane.appointment.appointmentdetails.AppointmentDetailsMapper;
 import pomalowane.client.Client;
 import pomalowane.client.ClientDao;
-import pomalowane.client.ClientMapper;
 import pomalowane.mappers.FromDtoService;
 import pomalowane.user.UserDao;
 import pomalowane.work.Work;
 import pomalowane.work.WorkDao;
 import pomalowane.user.User;
-import pomalowane.user.UserMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

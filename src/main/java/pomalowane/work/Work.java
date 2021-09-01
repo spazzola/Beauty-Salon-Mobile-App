@@ -1,4 +1,4 @@
-package pomalowane.service;
+package pomalowane.work;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,13 +16,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "services")
-public class Service {
+@Table(name = "works")
+public class Work {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "service_id")
+    @Column(name = "work_id")
     private Long id;
 
     @NotNull
@@ -37,7 +37,7 @@ public class Service {
     @NotNull
     private int minutesDuration;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "work", cascade = CascadeType.ALL)
     private List<AppointmentDetails> appointmentDetails;
 
 }

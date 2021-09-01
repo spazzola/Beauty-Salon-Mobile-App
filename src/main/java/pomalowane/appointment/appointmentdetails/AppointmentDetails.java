@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pomalowane.appointment.Appointment;
-import pomalowane.service.Service;
+import pomalowane.work.Work;
 
 import javax.persistence.*;
 
@@ -32,6 +32,6 @@ public class AppointmentDetails {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "service_fk")
-    private Service service;
+    private Work work;
 
 }
