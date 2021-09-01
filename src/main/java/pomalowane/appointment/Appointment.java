@@ -10,6 +10,7 @@ import pomalowane.appointment.appointmentdetails.AppointmentDetails;
 import pomalowane.client.Client;
 import pomalowane.user.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,6 +39,8 @@ public class Appointment {
     @NotNull
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)
     private List<AppointmentDetails> appointmentDetails;
+
+    private BigDecimal worksSum;
 
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
