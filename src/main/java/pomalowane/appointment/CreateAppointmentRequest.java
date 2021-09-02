@@ -20,5 +20,6 @@ public class CreateAppointmentRequest {
     private Long clientId;
     private Long employeeId;
     private List<Long> workIds;
+    private double percentageValueToAdd;
 
 }

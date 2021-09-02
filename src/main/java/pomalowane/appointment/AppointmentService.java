@@ -12,6 +12,7 @@ import pomalowane.work.WorkDao;
 import pomalowane.user.User;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class AppointmentService {
     private WorkDao workDao;
     private AppointmentDao appointmentDao;
 
+
     public Appointment createAppointment(CreateAppointmentRequest createAppointmentRequest) throws Exception {
         Client client = clientDao.findById(createAppointmentRequest.getClientId())
                 .orElseThrow(Exception::new);
@@ -35,6 +37,7 @@ public class AppointmentService {
                 .startDate(createAppointmentRequest.getStartDate())
                 .client(client)
                 .employee(employee)
+                .percentageValueToAdd(createAppointmentRequest.getPercentageValueToAdd())
                 .build();
 
         List<AppointmentDetails> appointmentDetailsList = createAndSaveAppointmentDetails(createAppointmentRequest, appointment);
@@ -86,7 +89,17 @@ public class AppointmentService {
                     .orElseThrow(Exception::new);
             totalSum = totalSum.add(work.getPrice());
         }
+
+        totalSum = addExtraAmountIfSunday(appointment, totalSum);
         appointment.setWorksSum(totalSum);
     }
 
+    private BigDecimal addExtraAmountIfSunday(Appointment appointment, BigDecimal worksValue) {
+        if (appointment.getStartDate().getDayOfWeek() == DayOfWeek.SUNDAY) {
+            BigDecimal amountToAdd = worksValue.multiply(BigDecimal.valueOf(appointment.getPercentageValueToAdd()));
+            return worksValue.add(amountToAdd);
+        } else {
+            return worksValue;
+        }
+    }
 }

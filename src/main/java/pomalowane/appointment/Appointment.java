@@ -42,6 +42,9 @@ public class Appointment {
 
     private BigDecimal worksSum;
 
+    @Transient
+    private double percentageValueToAdd;
+
     @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_fk")
