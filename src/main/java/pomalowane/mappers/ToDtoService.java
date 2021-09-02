@@ -25,7 +25,7 @@ public class ToDtoService {
         return AppointmentDetailsDto.builder()
                 .id(appointmentDetails.getId())
                 //.appointment(appointmentDto)
-                .service(workDto)
+                .work(workDto)
                 .build();
     }
 

@@ -14,6 +14,6 @@ import pomalowane.work.WorkDto;
 public class AppointmentDetailsDto {
 
     private Long id;
-    private WorkDto service;
+    private WorkDto work;
 
 }

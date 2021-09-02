@@ -11,7 +11,6 @@ import pomalowane.work.Work;
 import pomalowane.work.WorkDao;
 import pomalowane.user.User;
 import pomalowane.user.UserDto;
-import pomalowane.work.WorkDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class FromDtoService {
     public List<AppointmentDetails> fromDto(List<AppointmentDetailsDto> appointmentDetailsDtoList, Appointment appointment) throws Exception {
         List<AppointmentDetails> appointmentDetailsList = new ArrayList<>();
         for (AppointmentDetailsDto appointmentDetailsDto : appointmentDetailsDtoList) {
-            Work work = workDao.findById(appointmentDetailsDto.getService().getId())
+            Work work = workDao.findById(appointmentDetailsDto.getWork().getId())
                     .orElseThrow(Exception::new);
 
             AppointmentDetails appointmentDetails = AppointmentDetails.builder()

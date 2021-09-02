@@ -31,7 +31,7 @@ public class AppointmentDetails {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "service_fk")
+    @JoinColumn(name = "work_fk")
     private Work work;
 
 }
