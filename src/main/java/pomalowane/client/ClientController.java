@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pomalowane.mappers.ToDtoService;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/client")
@@ -18,6 +20,13 @@ public class ClientController {
         Client client = clientService.createClient(clientDto);
 
         return toDtoService.toDto(client);
+    }
+
+    @GetMapping("/getAll")
+    public List<ClientDto> getAll() {
+        List<Client> clients = clientService.getAll();
+
+        return toDtoService.toDto3(clients);
     }
 
 }

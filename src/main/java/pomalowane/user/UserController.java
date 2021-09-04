@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pomalowane.mappers.ToDtoService;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/user")
@@ -18,6 +20,13 @@ public class UserController {
         User user = userService.createUser(userDto);
 
         return toDtoService.toDto(user);
+    }
+
+    @GetMapping("/getAll")
+    public List<UserDto> getAll() {
+        List<User> users = userService.getAll();
+
+        return toDtoService.toDto4(users);
     }
 
 }

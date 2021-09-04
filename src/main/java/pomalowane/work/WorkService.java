@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Data
 @Service
@@ -21,6 +23,10 @@ public class WorkService {
                 .build();
 
         return workDao.save(work);
+    }
+
+    public List<Work> getAll() {
+        return workDao.findAll();
     }
 
 }

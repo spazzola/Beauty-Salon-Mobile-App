@@ -3,6 +3,8 @@ package pomalowane.user;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class UserService {
@@ -22,6 +24,10 @@ public class UserService {
                 .build();
 
         return userDao.save(user);
+    }
+
+    public List<User> getAll() {
+        return userDao.findAll();
     }
 
 }
