@@ -29,6 +29,12 @@ public class ToDtoService {
                 .build();
     }
 
+    public List<AppointmentDto> toDto2(List<Appointment> appointments) {
+        return appointments.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     public List<AppointmentDetailsDto> toDto(List<AppointmentDetails> appointmentDetailsList) {
         return appointmentDetailsList.stream()
                 .map(this::toDto)
@@ -45,6 +51,7 @@ public class ToDtoService {
                 .id(appointment.getId())
                 .startDate(appointment.getStartDate())
                 .finishDate(appointment.getFinishDate())
+                .note(appointment.getNote())
                 .worksSum(appointment.getWorksSum())
                 .appointmentDetails(appointmentDetailsDto)
                 .client(clientDto)
@@ -60,6 +67,12 @@ public class ToDtoService {
                 .phoneNumber(client.getPhoneNumber())
                 .mail(client.getMail())
                 .build();
+    }
+
+    public List<ClientDto> toDto3(List<Client> clients) {
+        return clients.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     public WorkDto toDto(Work work) {
@@ -80,6 +93,12 @@ public class ToDtoService {
         return workDto;
     }
 
+    public List<WorkDto> toDto5(List<Work> works) {
+        return works.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     public UserDto toDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
@@ -91,6 +110,12 @@ public class ToDtoService {
                 .mail(user.getMail())
                 .role(user.getRole())
                 .build();
+    }
+
+    public List<UserDto> toDto4(List<User> users) {
+        return users.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
 }

@@ -40,6 +40,8 @@ public class Appointment {
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)
     private List<AppointmentDetails> appointmentDetails;
 
+    private String note;
+
     private BigDecimal worksSum;
 
     @Transient

@@ -25,6 +25,7 @@ public class AppointmentDto {
     private LocalDateTime startDate;
     private LocalDateTime finishDate;
     private List<AppointmentDetailsDto> appointmentDetails;
+    private String note;
     private BigDecimal worksSum;
     private ClientDto client;
     private UserDto employee;

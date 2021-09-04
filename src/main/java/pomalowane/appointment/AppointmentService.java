@@ -49,6 +49,10 @@ public class AppointmentService {
         return appointmentDao.save(appointment);
     }
 
+    public List<Appointment> getAll() {
+        return appointmentDao.findAll();
+    }
+
     private List<AppointmentDetails> createAndSaveAppointmentDetails(CreateAppointmentRequest createAppointmentRequest,
                                                                      Appointment appointment) throws Exception {
         List<AppointmentDetails> appointmentDetailsList = new ArrayList<>();
