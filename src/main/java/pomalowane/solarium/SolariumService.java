@@ -20,7 +20,7 @@ public class SolariumService {
         if (solarium == null) {
             solarium = createNewSolarium(solariumDto);
         } else {
-            solarium = increaseUsedTime(solarium, solariumDto);
+            increaseUsedTime(solarium, solariumDto);
         }
         return solariumDao.save(solarium);
     }
@@ -32,12 +32,12 @@ public class SolariumService {
                 .build();
     }
 
-    private Solarium increaseUsedTime(Solarium solarium, SolariumDto solariumDto) {
+    private void increaseUsedTime(Solarium solarium, SolariumDto solariumDto) {
         int currentUsedTime = solarium.getUsedTime();
         currentUsedTime += solariumDto.getUsedTime();
         solarium.setUsedTime(currentUsedTime);
 
-        return solarium;
+        //return solarium;
     }
 
 }
