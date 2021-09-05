@@ -20,6 +20,17 @@ public class ClientService {
         return clientDao.save(client);
     }
 
+    public Client increaseBelatedCounter(Long clientId) throws Exception {
+        Client client = clientDao.findById(clientId)
+                .orElseThrow(Exception::new);
+
+        int belatedCounter = client.getBelatedCounter();
+        belatedCounter += 1;
+        client.setBelatedCounter(belatedCounter);
+
+        return clientDao.save(client);
+    }
+
     public List<Client> getAll() {
         return clientDao.findAll();
     }

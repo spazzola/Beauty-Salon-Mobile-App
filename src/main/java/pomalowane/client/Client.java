@@ -33,4 +33,6 @@ public class Client {
     @NotNull
     private String mail;
 
+    private int belatedCounter;
+
 }

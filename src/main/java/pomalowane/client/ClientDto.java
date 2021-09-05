@@ -17,5 +17,6 @@ public class ClientDto {
     private String surname;
     private String phoneNumber;
     private String mail;
+    private int belatedCounter;
 
 }

@@ -22,6 +22,13 @@ public class ClientController {
         return toDtoService.toDto(client);
     }
 
+    @PutMapping("/belated")
+    public ClientDto belated(@RequestParam Long clientId) throws Exception {
+        Client client = clientService.increaseBelatedCounter(clientId);
+
+        return toDtoService.toDto(client);
+    }
+
     @GetMapping("/getAll")
     public List<ClientDto> getAll() {
         List<Client> clients = clientService.getAll();
