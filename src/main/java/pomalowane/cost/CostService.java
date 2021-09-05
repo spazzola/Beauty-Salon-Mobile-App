@@ -17,4 +17,8 @@ public class CostService {
         return costDao.saveAll(costs);
     }
 
+    public List<Cost> getMonthCosts(int month, int year) {
+        return costDao.getMonthCosts(month, year);
+    }
+
 }

@@ -21,4 +21,11 @@ public class CostController {
         return costMapper.toDto(costs);
     }
 
+    @GetMapping("/getMonthCosts")
+    public List<CostDto> getMonthCosts(@RequestParam int month, @RequestParam int year) {
+        List<Cost> costs = costService.getMonthCosts(month, year);
+
+        return costMapper.toDto(costs);
+    }
+
 }
