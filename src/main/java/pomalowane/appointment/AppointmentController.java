@@ -22,6 +22,17 @@ public class AppointmentController {
         return toDtoService.toDto(appointment);
     }
 
+    @GetMapping("/getMonthAppointments")
+    public List<AppointmentDto> getMonthAppointments(@RequestParam int month,
+                                                     @RequestParam int year,
+                                                     @RequestParam Long userId) throws Exception {
+        List<Appointment> appointments = appointmentService.getMonthAppointments(month, year, userId);
+
+        return toDtoService.toDto2(appointments);
+
+    }
+
+
     @GetMapping("/getAll")
     public List<AppointmentDto> getAll() {
         List<Appointment> appointments = appointmentService.getAll();

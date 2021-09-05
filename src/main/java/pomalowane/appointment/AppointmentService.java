@@ -49,6 +49,16 @@ public class AppointmentService {
         return appointmentDao.save(appointment);
     }
 
+    public List<Appointment> getMonthAppointments(int month, int year, Long userId) throws Exception {
+        List<Appointment> appointments;
+        if (checkIfAdmin(userId)) {
+            appointments = appointmentDao.getMonthAppointments(month, year);
+        } else {
+            appointments = appointmentDao.getUserMonthAppointments(month, year, userId);
+        }
+        return appointments;
+    }
+
     public List<Appointment> getAll() {
         return appointmentDao.findAll();
     }
@@ -106,4 +116,12 @@ public class AppointmentService {
             return worksValue;
         }
     }
+
+    private boolean checkIfAdmin(Long userId) throws Exception {
+        User user = userDao.findById(userId)
+                .orElseThrow(Exception::new);
+
+        return user.getRole().equals("ADMIN");
+    }
+
 }
