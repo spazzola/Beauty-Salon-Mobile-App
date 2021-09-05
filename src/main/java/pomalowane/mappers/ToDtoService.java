@@ -66,6 +66,7 @@ public class ToDtoService {
                 .surname(client.getSurname())
                 .phoneNumber(client.getPhoneNumber())
                 .mail(client.getMail())
+                .belatedCounter(client.getBelatedCounter())
                 .build();
     }
 

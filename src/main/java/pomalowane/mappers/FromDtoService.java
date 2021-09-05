@@ -46,6 +46,7 @@ public class FromDtoService {
                 .surname(clientDto.getSurname())
                 .phoneNumber(clientDto.getPhoneNumber())
                 .mail(clientDto.getMail())
+                .belatedCounter(clientDto.getBelatedCounter())
                 .build();
     }
 
