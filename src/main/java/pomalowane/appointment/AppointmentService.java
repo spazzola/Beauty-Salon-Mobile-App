@@ -2,10 +2,11 @@ package pomalowane.appointment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
+import pomalowane.appointment.appointmentdetails.AppointmentDetailsDao;
 import pomalowane.client.Client;
 import pomalowane.client.ClientDao;
-import pomalowane.mappers.FromDtoService;
 import pomalowane.user.UserDao;
 import pomalowane.work.Work;
 import pomalowane.work.WorkDao;
@@ -16,6 +17,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -25,6 +27,7 @@ public class AppointmentService {
     private ClientDao clientDao;
     private WorkDao workDao;
     private AppointmentDao appointmentDao;
+    private AppointmentDetailsDao appointmentDetailsDao;
 
 
     public Appointment createAppointment(CreateAppointmentRequest createAppointmentRequest) throws Exception {
@@ -40,11 +43,45 @@ public class AppointmentService {
                 .percentageValueToAdd(createAppointmentRequest.getPercentageValueToAdd())
                 .build();
 
-        List<AppointmentDetails> appointmentDetailsList = createAndSaveAppointmentDetails(createAppointmentRequest, appointment);
+        List<AppointmentDetails> appointmentDetailsList = createAndSaveAppointmentDetails(createAppointmentRequest.getWorkIds(), appointment);
         calculateAndSetFinishDate(appointment, appointmentDetailsList);
         calculateAndSetWorksSum(appointment, appointmentDetailsList);
 
         appointment.setAppointmentDetails(appointmentDetailsList);
+
+        return appointmentDao.save(appointment);
+    }
+
+    @Transactional
+    public Appointment updateAppointment(UpdateAppointmentRequest updateAppointmentRequest) throws Exception {
+        Appointment appointment = appointmentDao.getById(updateAppointmentRequest.getAppointmentId());
+
+        Client client = clientDao.getById(updateAppointmentRequest.getClientId());
+        User employee = userDao.getById(updateAppointmentRequest.getEmployeeId());
+
+        appointment.setClient(client);
+        appointment.setEmployee(employee);
+        appointment.setPercentageValueToAdd(updateAppointmentRequest.getPercentageValueToAdd());
+        appointment.setStartDate(updateAppointmentRequest.getStartDate());
+
+        List<AppointmentDetails> appointmentDetailsList = appointment.getAppointmentDetails();
+        if (appointmentDetailsList.size() == updateAppointmentRequest.getWorkIds().size()) {
+            reassignWorksToAppointmentDetails(appointment, updateAppointmentRequest);
+            calculateAndSetFinishDate(appointment, appointmentDetailsList);
+            calculateAndSetWorksSum(appointment, appointmentDetailsList);
+        }
+
+        if (appointmentDetailsList.size() > updateAppointmentRequest.getWorkIds().size()) {
+            deleteAppointmentDetails(appointment, updateAppointmentRequest);
+            calculateAndSetFinishDate(appointment, appointmentDetailsList);
+            calculateAndSetWorksSum(appointment, appointmentDetailsList);
+        }
+
+        if (appointmentDetailsList.size() < updateAppointmentRequest.getWorkIds().size()) {
+            createAndSaveAppointmentDetails(appointment, updateAppointmentRequest);
+            calculateAndSetFinishDate(appointment, appointmentDetailsList);
+            calculateAndSetWorksSum(appointment, appointmentDetailsList);
+        }
 
         return appointmentDao.save(appointment);
     }
@@ -63,11 +100,10 @@ public class AppointmentService {
         return appointmentDao.findAll();
     }
 
-    private List<AppointmentDetails> createAndSaveAppointmentDetails(CreateAppointmentRequest createAppointmentRequest,
+    private List<AppointmentDetails> createAndSaveAppointmentDetails(List<Long> workIds,
                                                                      Appointment appointment) throws Exception {
-        List<AppointmentDetails> appointmentDetailsList = new ArrayList<>();
-
-        for (Long workId : createAppointmentRequest.getWorkIds()) {
+        List<AppointmentDetails> appointmentDetailsList = createOrGetAppointmentDetailsList(appointment);
+        for (Long workId : workIds) {
             Work work = workDao.findById(workId)
                     .orElseThrow(Exception::new);
 
@@ -79,6 +115,21 @@ public class AppointmentService {
         }
 
         return appointmentDetailsList;
+    }
+
+    private void createAndSaveAppointmentDetails(Appointment appointment, UpdateAppointmentRequest updateAppointmentRequest) throws Exception {
+        List<Long> workIds = getWorksAppointmentDetailsIds(appointment);
+        List<Long> workIdsToAdd = getDifferencesFromLists(updateAppointmentRequest.getWorkIds(), workIds);
+        List<AppointmentDetails> appointmentDetailsList = createAndSaveAppointmentDetails(workIdsToAdd, appointment);
+        appointment.setAppointmentDetails(appointmentDetailsList);
+    }
+
+    private List<AppointmentDetails> createOrGetAppointmentDetailsList(Appointment appointment) {
+        if (appointment.getAppointmentDetails() == null) {
+            return new ArrayList<>();
+        } else {
+            return appointment.getAppointmentDetails();
+        }
     }
 
     private Appointment calculateAndSetFinishDate(Appointment appointment, List<AppointmentDetails> appointmentDetailsList) {
@@ -122,6 +173,45 @@ public class AppointmentService {
                 .orElseThrow(Exception::new);
 
         return user.getRole().equals("ADMIN");
+    }
+
+    private void reassignWorksToAppointmentDetails(Appointment appointment, UpdateAppointmentRequest updateAppointmentRequest) {
+        for (int i = 0; i < updateAppointmentRequest.getWorkIds().size(); i++) {
+            Work work = workDao.getById(updateAppointmentRequest.getWorkIds().get(i));
+            AppointmentDetails appointmentDetails = appointment.getAppointmentDetails().get(i);
+            appointmentDetails.setWork(work);
+            appointmentDetailsDao.save(appointmentDetails);
+        }
+    }
+
+    private void deleteAppointmentDetails(Appointment appointment, UpdateAppointmentRequest updateAppointmentRequest) {
+        List<Long> workIds = getWorksAppointmentDetailsIds(appointment);
+        List<Long> workIdsToDelete = getDifferencesFromLists(workIds, updateAppointmentRequest.getWorkIds());
+        deleteAppointmentDetailsFromAppointment(workIdsToDelete, appointment);
+        deleteAppointmentDetailsFromDb(workIdsToDelete);
+    }
+
+    private List<Long> getWorksAppointmentDetailsIds(Appointment appointment) {
+        List<Long> ids = new ArrayList<>();
+        for (AppointmentDetails appointmentDetails : appointment.getAppointmentDetails()) {
+            ids.add(appointmentDetails.getWork().getId());
+        }
+        return ids;
+    }
+
+    private void deleteAppointmentDetailsFromAppointment(List<Long> workIdsToDelete, Appointment appointment) {
+        workIdsToDelete.forEach(workId -> appointment.getAppointmentDetails()
+                .removeIf(appointmentDetails -> appointmentDetails.getWork().getId().equals(workId)));
+    }
+
+    private void deleteAppointmentDetailsFromDb(List<Long> workIdsToDelete) {
+        workIdsToDelete.forEach(workId -> appointmentDetailsDao.deleteByWorkId(workId));
+    }
+
+    private List<Long> getDifferencesFromLists(List<Long> firstList, List<Long> secondList) {
+        return firstList.stream()
+                .filter(el -> !secondList.contains(el))
+                .collect(Collectors.toList());
     }
 
 }

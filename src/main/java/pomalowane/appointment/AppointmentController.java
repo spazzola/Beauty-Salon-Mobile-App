@@ -32,6 +32,13 @@ public class AppointmentController {
 
     }
 
+    @PutMapping("/update")
+    public AppointmentDto updateAppointment(@RequestBody UpdateAppointmentRequest updateAppointmentRequest) throws Exception {
+        Appointment appointment = appointmentService.updateAppointment(updateAppointmentRequest);
+
+        return toDtoService.toDto(appointment);
+    }
+
 
     @GetMapping("/getAll")
     public List<AppointmentDto> getAll() {
