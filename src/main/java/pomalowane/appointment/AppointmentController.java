@@ -1,6 +1,8 @@
 package pomalowane.appointment;
 
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pomalowane.mappers.ToDtoService;
 
@@ -39,6 +41,12 @@ public class AppointmentController {
         return toDtoService.toDto(appointment);
     }
 
+    @DeleteMapping("/delete")
+    public HttpStatus deleteAppointment(@RequestParam Long id) {
+        appointmentService.deleteAppointment(id);
+
+        return HttpStatus.OK;
+    }
 
     @GetMapping("/getAll")
     public List<AppointmentDto> getAll() {

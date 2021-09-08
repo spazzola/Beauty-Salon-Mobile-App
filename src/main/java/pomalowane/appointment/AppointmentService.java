@@ -1,6 +1,7 @@
 package pomalowane.appointment;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
@@ -84,6 +85,11 @@ public class AppointmentService {
         }
 
         return appointmentDao.save(appointment);
+    }
+
+    @Transactional
+    public void deleteAppointment(Long id) {
+        appointmentDao.deleteById(id);
     }
 
     public List<Appointment> getMonthAppointments(int month, int year, Long userId) throws Exception {
