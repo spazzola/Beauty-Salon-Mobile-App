@@ -16,7 +16,14 @@ public class CostController {
 
 
     @PostMapping("/create")
-    public List<CostDto> createCost(@RequestBody List<CostDto> costsDto) {
+    public CostDto createCost(@RequestBody CostDto costDto) {
+        Cost cost = costService.createCost(costDto);
+
+        return costMapper.toDto(cost);
+    }
+
+    @PostMapping("/createCosts")
+    public List<CostDto> createCosts(@RequestBody List<CostDto> costsDto) {
         List<Cost> costs = costService.createCost(costsDto);
 
         return costMapper.toDto(costs);

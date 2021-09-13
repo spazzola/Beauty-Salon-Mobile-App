@@ -13,6 +13,12 @@ public class CostService {
     private CostMapper costMapper;
 
 
+    public Cost createCost(CostDto costDto) {
+        Cost cost = costMapper.fromDto(costDto);
+
+        return costDao.save(cost);
+    }
+
     public List<Cost> createCost(List<CostDto> costsDto) {
         List<Cost> costs = costMapper.fromDto(costsDto);
 
