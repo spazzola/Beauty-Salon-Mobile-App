@@ -33,6 +33,11 @@ public class ClientService {
         return clientDao.save(client);
     }
 
+    @Transactional
+    public void deleteClient(Long id) {
+        clientDao.deleteById(id);
+    }
+
     public Client increaseBelatedCounter(Long clientId) throws Exception {
         Client client = clientDao.findById(clientId)
                 .orElseThrow(Exception::new);

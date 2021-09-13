@@ -1,6 +1,7 @@
 package pomalowane.client;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pomalowane.mappers.ToDtoService;
 
@@ -27,6 +28,13 @@ public class ClientController {
         Client client = clientService.updateClient(clientDto);
 
         return toDtoService.toDto(client);
+    }
+
+    @DeleteMapping("/delete")
+    public HttpStatus deleteClient(@RequestParam Long id) {
+        clientService.deleteClient(id);
+
+        return HttpStatus.OK;
     }
 
     @PutMapping("/belated")
