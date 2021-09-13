@@ -2,6 +2,7 @@ package pomalowane.cost;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -19,6 +20,20 @@ public class CostController {
         List<Cost> costs = costService.createCost(costsDto);
 
         return costMapper.toDto(costs);
+    }
+
+    @PutMapping("/update")
+    public CostDto updateCost(@RequestBody CostDto costDto) {
+        Cost cost = costService.updateCost(costDto);
+
+        return costMapper.toDto(cost);
+    }
+
+    @DeleteMapping("/delete")
+    public HttpStatus deleteCost(@RequestParam Long id) {
+        costService.deleteCost(id);
+
+        return HttpStatus.OK;
     }
 
     @GetMapping("/getMonthCosts")
