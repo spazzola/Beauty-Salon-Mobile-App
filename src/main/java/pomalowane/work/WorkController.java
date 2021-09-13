@@ -1,6 +1,7 @@
 package pomalowane.work;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pomalowane.mappers.ToDtoService;
 
@@ -20,6 +21,20 @@ public class WorkController {
         Work work = workService.createWork(createWorkRequest);
 
         return toDtoService.toDto(work);
+    }
+
+    @PutMapping("/update")
+    public WorkDto updateWork(@RequestBody WorkDto workDto) {
+        Work work = workService.updateWork(workDto);
+
+        return toDtoService.toDto(work);
+    }
+
+    @DeleteMapping("/delete")
+    public HttpStatus deleteWork(@RequestParam Long id) {
+        workService.deleteWork(id);
+
+        return HttpStatus.OK;
     }
 
     @GetMapping("/getAll")
