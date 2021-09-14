@@ -25,6 +25,10 @@ public class SolariumService {
         return solariumDao.save(solarium);
     }
 
+    public Solarium getMonthSolarium(int month, int year) {
+        return solariumDao.getMonthSolarium(month, year);
+    }
+
     private Solarium createNewSolarium(SolariumDto solariumDto) {
         return Solarium.builder()
                 .usedDate(solariumDto.getUsedDate())

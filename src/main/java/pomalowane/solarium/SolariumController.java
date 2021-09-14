@@ -20,4 +20,11 @@ public class SolariumController {
         return solariumMapper.toDto(solarium);
     }
 
+    @GetMapping("/getMonthSolarium")
+    public SolariumDto getMonthSolarium(@RequestParam int month, @RequestParam int year) {
+        Solarium solarium = solariumService.getMonthSolarium(month, year);
+
+        return solariumMapper.toDto(solarium);
+    }
+
 }
