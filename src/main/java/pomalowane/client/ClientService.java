@@ -16,8 +16,8 @@ public class ClientService {
 
 
     public Client createClient(ClientDto clientDto) {
+        validateClient(clientDto);
         Client client = fromDtoService.fromDto(clientDto);
-
         return clientDao.save(client);
     }
 
@@ -53,4 +53,15 @@ public class ClientService {
         return clientDao.findAll();
     }
 
+    private void validateClient(ClientDto clientDto) {
+        if (clientDto.getName() == null || clientDto.getName().equals("")) {
+            throw new IllegalArgumentException("Bad value of name of Client: " + clientDto.getName());
+        }
+        if (clientDto.getSurname() == null || clientDto.getSurname().equals("")) {
+            throw new IllegalArgumentException("Bad value of surname of Client: " + clientDto.getName());
+        }
+        if (clientDto.getPhoneNumber() == null || clientDto.getPhoneNumber().length() < 9) {
+            throw new IllegalArgumentException("Bad value of phoneNumber of Client: " + clientDto.getName());
+        }
+    }
 }
