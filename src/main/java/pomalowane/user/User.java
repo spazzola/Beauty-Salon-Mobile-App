@@ -42,4 +42,7 @@ public class User {
     @NotNull
     private String role;
 
+    @Transient
+    private double workedHours;
+
 }

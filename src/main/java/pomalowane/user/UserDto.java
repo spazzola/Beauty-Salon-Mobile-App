@@ -20,5 +20,6 @@ public class UserDto {
     private String phoneNumber;
     private String mail;
     private String role;
+    private double workedHours;
 
 }

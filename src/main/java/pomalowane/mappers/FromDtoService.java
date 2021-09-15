@@ -60,6 +60,7 @@ public class FromDtoService {
                 .phoneNumber(userDto.getPhoneNumber())
                 .mail(userDto.getMail())
                 .role(userDto.getRole())
+                .workedHours(userDto.getWorkedHours())
                 .build();
 
     }

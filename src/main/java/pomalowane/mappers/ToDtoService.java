@@ -110,6 +110,7 @@ public class ToDtoService {
                 .phoneNumber(user.getPhoneNumber())
                 .mail(user.getMail())
                 .role(user.getRole())
+                .workedHours(user.getWorkedHours())
                 .build();
     }
 
