@@ -1,7 +1,6 @@
 package pomalowane.appointment;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
@@ -32,6 +31,8 @@ public class AppointmentService {
 
 
     public Appointment createAppointment(CreateAppointmentRequest createAppointmentRequest) throws Exception {
+        validateAppointment(createAppointmentRequest);
+
         Client client = clientDao.findById(createAppointmentRequest.getClientId())
                 .orElseThrow(Exception::new);
         User employee = userDao.findById(createAppointmentRequest.getEmployeeId())
@@ -104,6 +105,51 @@ public class AppointmentService {
 
     public List<Appointment> getAll() {
         return appointmentDao.findAll();
+    }
+
+    private void validateAppointment(CreateAppointmentRequest createAppointmentRequest) {
+        validateDate(createAppointmentRequest);
+        validateEmployee(createAppointmentRequest);
+        validateClient(createAppointmentRequest);
+        validateWorks(createAppointmentRequest);
+    }
+
+    private void validateDate(CreateAppointmentRequest createAppointmentRequest) {
+        int month = createAppointmentRequest.getStartDate().getMonth().getValue();
+        int year = createAppointmentRequest.getStartDate().getYear();
+        List<Appointment> appointments = appointmentDao.getMonthAppointments(month, year);
+        for (Appointment appointment : appointments) {
+            if (createAppointmentRequest.getStartDate().isAfter(appointment.getStartDate()) && createAppointmentRequest.getStartDate().isBefore(appointment.getFinishDate())) {
+                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+            }
+            if (createAppointmentRequest.getStartDate().isEqual(appointment.getStartDate())) {
+                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+            }
+        }
+    }
+
+    private void validateEmployee(CreateAppointmentRequest createAppointmentRequest) {
+        validateId(createAppointmentRequest.getEmployeeId(), "Employee (User)");
+    }
+
+    private void validateClient(CreateAppointmentRequest createAppointmentRequest) {
+        validateId(createAppointmentRequest.getClientId(),"Client");
+    }
+
+    private void validateWorks(CreateAppointmentRequest createAppointmentRequest) {
+        if (createAppointmentRequest.getWorkIds() == null) {
+            throw new IllegalArgumentException("Works list is null");
+        } else {
+            for (Long workId : createAppointmentRequest.getWorkIds()) {
+                validateId(workId, "Work");
+            }
+        }
+    }
+
+    private void validateId(Long id, String idType) {
+        if (id == null || id == 0) {
+            throw new IllegalArgumentException("Bad id of " + idType + ": " + id);
+        }
     }
 
     private List<AppointmentDetails> createAndSaveAppointmentDetails(List<Long> workIds,
