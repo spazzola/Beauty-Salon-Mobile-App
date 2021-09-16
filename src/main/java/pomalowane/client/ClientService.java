@@ -58,13 +58,13 @@ public class ClientService {
             throw new IllegalArgumentException("Client already exists");
         }
         if (clientDto.getName() == null || clientDto.getName().equals("")) {
-            throw new IllegalArgumentException("Bad value of name of Client: " + clientDto.getName());
+            throw new IllegalArgumentException("Bad value of Client's name: " + clientDto.getName());
         }
         if (clientDto.getSurname() == null || clientDto.getSurname().equals("")) {
-            throw new IllegalArgumentException("Bad value of surname of Client: " + clientDto.getName());
+            throw new IllegalArgumentException("Bad value of Client's surname: " + clientDto.getName());
         }
         if (clientDto.getPhoneNumber() == null || clientDto.getPhoneNumber().length() < 9) {
-            throw new IllegalArgumentException("Bad value of phoneNumber of Client: " + clientDto.getName());
+            throw new IllegalArgumentException("Bad value of Client's phoneNumber: " + clientDto.getName());
         }
     }
 }
