@@ -1,5 +1,6 @@
 package pomalowane.cost;
 
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,16 @@ public class CostService {
 
 
     public Cost createCost(CostDto costDto) {
+        validateCost(costDto);
         Cost cost = costMapper.fromDto(costDto);
 
         return costDao.save(cost);
     }
 
     public List<Cost> createCost(List<CostDto> costsDto) {
+        for (CostDto costDto : costsDto) {
+            validateCost(costDto);
+        }
         List<Cost> costs = costMapper.fromDto(costsDto);
 
         return costDao.saveAll(costs);
@@ -43,4 +48,15 @@ public class CostService {
         return costDao.getMonthCosts(month, year);
     }
 
+    private void validateCost(CostDto costDto) {
+        if (costDto.getName() == null || costDto.getName().equals("")) {
+            throw new IllegalArgumentException("Bad value of Cost's name: " + costDto.getName());
+        }
+        if (costDto.getValue() == null || costDto.getValue().equals(BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("Bad value of Cost's value: " + costDto.getValue());
+        }
+        if (costDto.getAddedDate() == null) {
+            throw new IllegalArgumentException("Bad value of Cost's addedDate: " + costDto.getAddedDate());
+        }
+    }
 }
