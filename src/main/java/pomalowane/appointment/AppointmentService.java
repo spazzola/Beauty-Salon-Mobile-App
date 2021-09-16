@@ -147,7 +147,7 @@ public class AppointmentService {
     }
 
     private void validateId(Long id, String idType) {
-        if (id == null || id == 0) {
+        if (id == null || id <= 0) {
             throw new IllegalArgumentException("Bad id of " + idType + ": " + id);
         }
     }
