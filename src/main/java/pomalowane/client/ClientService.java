@@ -54,6 +54,9 @@ public class ClientService {
     }
 
     private void validateClient(ClientDto clientDto) {
+        if (clientDao.findByPhoneNumber(clientDto.getPhoneNumber()) != null) {
+            throw new IllegalArgumentException("Client already exists");
+        }
         if (clientDto.getName() == null || clientDto.getName().equals("")) {
             throw new IllegalArgumentException("Bad value of name of Client: " + clientDto.getName());
         }
