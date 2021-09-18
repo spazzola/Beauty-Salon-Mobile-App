@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,6 +17,7 @@ public class WorkService {
 
 
     public Work createWork(CreateWorkRequest createWorkRequest) {
+        validateWork(createWorkRequest);
         Work work = Work.builder()
                 .name(createWorkRequest.getName())
                 .price(createWorkRequest.getPrice())
@@ -43,6 +45,25 @@ public class WorkService {
 
     public List<Work> getAll() {
         return workDao.findAll();
+    }
+
+    private void validateWork(CreateWorkRequest createWorkRequest) {
+        if (createWorkRequest.getName() == null || createWorkRequest.getName().equals("")) {
+            throw new IllegalArgumentException("Bad value of Work's name: " + createWorkRequest.getName());
+        }
+        if (createWorkRequest.getPrice() == null || createWorkRequest.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Bad value of Work's price: " + createWorkRequest.getPrice());
+        }
+        if (createWorkRequest.getHoursDuration() < 0) {
+            throw new IllegalArgumentException("Bad value of Work's hoursDuration: " + createWorkRequest.getHoursDuration());
+        }
+        if (createWorkRequest.getMinutesDuration() < 0) {
+            throw new IllegalArgumentException("Bad value of Work's minutesDuration: " + createWorkRequest.getMinutesDuration());
+        }
+        if (createWorkRequest.getHoursDuration() <= 0 && createWorkRequest.getMinutesDuration() <= 0) {
+            throw new IllegalArgumentException("Bad value of Work's hoursDuration: " + createWorkRequest.getHoursDuration() +
+                    ", and minutesDuration: " + createWorkRequest.getMinutesDuration());
+        }
     }
 
 }
