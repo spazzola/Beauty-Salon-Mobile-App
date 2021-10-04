@@ -7,6 +7,8 @@ import pomalowane.appointment.appointmentdetails.AppointmentDetails;
 import pomalowane.appointment.appointmentdetails.AppointmentDetailsDao;
 import pomalowane.client.Client;
 import pomalowane.client.ClientDao;
+import pomalowane.sms.SerwerSMS;
+import pomalowane.sms.SmsService;
 import pomalowane.user.UserDao;
 import pomalowane.work.Work;
 import pomalowane.work.WorkDao;
@@ -16,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,7 @@ public class AppointmentService {
     private WorkDao workDao;
     private AppointmentDao appointmentDao;
     private AppointmentDetailsDao appointmentDetailsDao;
+    private SmsService smsService;
 
 
     public Appointment createAppointment(CreateAppointmentRequest createAppointmentRequest) throws Exception {
@@ -51,6 +55,8 @@ public class AppointmentService {
 
         appointment.setAppointmentDetails(appointmentDetailsList);
 
+        smsService.setSmsReminder(appointment);
+
         return appointmentDao.save(appointment);
     }
 
@@ -64,7 +70,12 @@ public class AppointmentService {
         appointment.setClient(client);
         appointment.setEmployee(employee);
         appointment.setPercentageValueToAdd(updateAppointmentRequest.getPercentageValueToAdd());
-        appointment.setStartDate(updateAppointmentRequest.getStartDate());
+
+
+        if (appointment.getStartDate() != updateAppointmentRequest.getStartDate()) {
+            appointment.setStartDate(updateAppointmentRequest.getStartDate());
+            smsService.updateSmsReminder(appointment);
+        }
 
         List<AppointmentDetails> appointmentDetailsList = appointment.getAppointmentDetails();
         if (appointmentDetailsList.size() == updateAppointmentRequest.getWorkIds().size()) {

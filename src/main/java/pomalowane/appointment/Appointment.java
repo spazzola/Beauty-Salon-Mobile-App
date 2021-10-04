@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
 import pomalowane.client.Client;
+import pomalowane.sms.Sms;
 import pomalowane.user.User;
 
 import java.math.BigDecimal;
@@ -39,6 +40,9 @@ public class Appointment {
     @NotNull
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)
     private List<AppointmentDetails> appointmentDetails;
+
+    @OneToMany(mappedBy = "appointment")
+    private List<Sms> smsReminders;
 
     private String note;
 
