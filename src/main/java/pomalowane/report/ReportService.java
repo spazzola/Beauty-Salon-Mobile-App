@@ -60,7 +60,6 @@ public class ReportService {
                 .build();
     }
 
-    @Transactional
     private BigDecimal calculateTotalWorkSum(List<Appointment> appointments) {
         BigDecimal totalWorkSum = BigDecimal.ZERO;
         for (Appointment appointment : appointments) {
@@ -69,7 +68,6 @@ public class ReportService {
         return totalWorkSum;
     }
 
-    @Transactional
     private BigDecimal calculateTotalCostsValue(int month, int year) {
         List<Cost> costs = costDao.getMonthCosts(month, year);
         BigDecimal totalCostsValue = BigDecimal.ZERO;
