@@ -32,7 +32,6 @@ public class SmsService {
     public void updateSmsReminder(Appointment appointment) throws Exception {
         SerwerSMS SerwerSMSApi = new SerwerSMS("webapi_merios", "4069ce21");
         List<Sms> smses = smsDao.findByAppointmentId(appointment.getId());
-        System.out.println(smses.size() + " -size list");
         for (Sms sms : smses) {
             SerwerSMSApi.message.delete(sms.getProvidedId(), null);
             smsDao.delete(sms);
@@ -42,7 +41,6 @@ public class SmsService {
 
     private Sms buildSms(Appointment appointment, String date) throws Exception {
         String providedId = sendSms(appointment, appointment.getClient(), date);
-
 
         date = date.replace("-", "/");
         date = date.replace("T", " ");
