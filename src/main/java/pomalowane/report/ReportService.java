@@ -3,12 +3,10 @@ package pomalowane.report;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Timer;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pomalowane.MyTime;
 import pomalowane.appointment.Appointment;
 import pomalowane.appointment.AppointmentDao;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
@@ -46,8 +44,8 @@ public class ReportService {
                     }
                 }
             }
-            MyTime myTime = MyTime.calculateTime(hours, minutes);
-            user.setWorkedHours(myTime.getHours());
+            int workedHours = calculateTime(hours, minutes);
+            user.setWorkedHours(workedHours);
         }
 
         LocalDateTime date = LocalDateTime.of(year, month, 1, 1, 1);
@@ -75,6 +73,14 @@ public class ReportService {
             totalCostsValue = totalCostsValue.add(cost.getValue());
         }
         return totalCostsValue;
+    }
+
+    public int calculateTime(int hours, int minutes) {
+        int totalTime = hours * 60;
+        totalTime += minutes;
+        hours = totalTime / 60;
+
+        return hours;
     }
 
 }
