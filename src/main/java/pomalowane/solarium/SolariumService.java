@@ -3,6 +3,7 @@ package pomalowane.solarium;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @AllArgsConstructor
@@ -12,6 +13,7 @@ public class SolariumService {
     private SolariumDao solariumDao;
 
 
+    @Transactional
     public Solarium useSolarium(SolariumDto solariumDto) {
         int month = solariumDto.getUsedDate().getMonth().getValue();
         int year = solariumDto.getUsedDate().getYear();
@@ -25,6 +27,7 @@ public class SolariumService {
         return solariumDao.save(solarium);
     }
 
+    @Transactional
     public Solarium getMonthSolarium(int month, int year) {
         return solariumDao.getMonthSolarium(month, year);
     }

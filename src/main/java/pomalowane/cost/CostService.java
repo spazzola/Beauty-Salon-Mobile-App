@@ -14,6 +14,7 @@ public class CostService {
     private CostMapper costMapper;
 
 
+    @Transactional
     public Cost createCost(CostDto costDto) {
         validateCost(costDto);
         Cost cost = costMapper.fromDto(costDto);
@@ -21,6 +22,7 @@ public class CostService {
         return costDao.save(cost);
     }
 
+    @Transactional
     public List<Cost> createCost(List<CostDto> costsDto) {
         for (CostDto costDto : costsDto) {
             validateCost(costDto);
@@ -40,10 +42,12 @@ public class CostService {
         return costDao.save(cost);
     }
 
+    @Transactional
     public void deleteCost(Long id) {
         costDao.deleteById(id);
     }
 
+    @Transactional
     public List<Cost> getMonthCosts(int month, int year) {
         return costDao.getMonthCosts(month, year);
     }

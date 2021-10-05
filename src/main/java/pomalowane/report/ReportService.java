@@ -7,6 +7,7 @@ import java.util.Timer;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pomalowane.MyTime;
 import pomalowane.appointment.Appointment;
 import pomalowane.appointment.AppointmentDao;
@@ -25,6 +26,7 @@ public class ReportService {
     private AppointmentDao appointmentDao;
 
 
+    @Transactional
     public Report generateMonthlyReport(int month, int year) {
         List<Appointment> appointments = appointmentDao.getMonthAppointments(month, year);
         BigDecimal totalWorkSum = calculateTotalWorkSum(appointments);
@@ -58,6 +60,7 @@ public class ReportService {
                 .build();
     }
 
+    @Transactional
     private BigDecimal calculateTotalWorkSum(List<Appointment> appointments) {
         BigDecimal totalWorkSum = BigDecimal.ZERO;
         for (Appointment appointment : appointments) {
@@ -66,6 +69,7 @@ public class ReportService {
         return totalWorkSum;
     }
 
+    @Transactional
     private BigDecimal calculateTotalCostsValue(int month, int year) {
         List<Cost> costs = costDao.getMonthCosts(month, year);
         BigDecimal totalCostsValue = BigDecimal.ZERO;

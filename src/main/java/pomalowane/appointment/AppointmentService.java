@@ -34,6 +34,7 @@ public class AppointmentService {
     private SmsService smsService;
 
 
+    @Transactional
     public Appointment createAppointment(CreateAppointmentRequest createAppointmentRequest) throws Exception {
         validateAppointment(createAppointmentRequest);
 
@@ -114,6 +115,7 @@ public class AppointmentService {
         return appointments;
     }
 
+    @Transactional
     public List<Appointment> getAll() {
         return appointmentDao.findAll();
     }

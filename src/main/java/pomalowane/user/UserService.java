@@ -93,6 +93,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public List<User> getAll() {
         return userDao.findAll();
     }

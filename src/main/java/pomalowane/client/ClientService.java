@@ -15,6 +15,7 @@ public class ClientService {
     private FromDtoService fromDtoService;
 
 
+    @Transactional
     public Client createClient(ClientDto clientDto) {
         validateClient(clientDto);
         Client client = fromDtoService.clientFromDto(clientDto);
@@ -38,6 +39,7 @@ public class ClientService {
         clientDao.deleteById(id);
     }
 
+    @Transactional
     public Client increaseBelatedCounter(Long clientId) throws Exception {
         Client client = clientDao.findById(clientId)
                 .orElseThrow(Exception::new);
@@ -49,6 +51,7 @@ public class ClientService {
         return clientDao.save(client);
     }
 
+    @Transactional
     public List<Client> getAll() {
         return clientDao.findAll();
     }

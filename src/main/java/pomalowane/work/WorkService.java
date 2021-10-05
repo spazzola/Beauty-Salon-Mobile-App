@@ -39,10 +39,12 @@ public class WorkService {
         return workDao.save(work);
     }
 
+    @Transactional
     public void deleteWork(Long id) {
         workDao.deleteById(id);
     }
 
+    @Transactional
     public List<Work> getAll() {
         return workDao.findAll();
     }
