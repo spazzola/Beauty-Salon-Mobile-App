@@ -1,7 +1,6 @@
 package pomalowane.appointment;
 
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pomalowane.mappers.ToDtoService;
@@ -21,7 +20,7 @@ public class AppointmentController {
     public AppointmentDto createAppointment(@RequestBody CreateAppointmentRequest createAppointmentRequest) throws Exception {
         Appointment appointment = appointmentService.createAppointment(createAppointmentRequest);
 
-        return toDtoService.toDto(appointment);
+        return toDtoService.appointmentToDto(appointment);
     }
 
     @GetMapping("/getMonthAppointments")
@@ -30,7 +29,7 @@ public class AppointmentController {
                                                      @RequestParam Long userId) throws Exception {
         List<Appointment> appointments = appointmentService.getMonthAppointments(month, year, userId);
 
-        return toDtoService.toDto2(appointments);
+        return toDtoService.appointmentToDto(appointments);
 
     }
 
@@ -38,7 +37,7 @@ public class AppointmentController {
     public AppointmentDto updateAppointment(@RequestBody UpdateAppointmentRequest updateAppointmentRequest) throws Exception {
         Appointment appointment = appointmentService.updateAppointment(updateAppointmentRequest);
 
-        return toDtoService.toDto(appointment);
+        return toDtoService.appointmentToDto(appointment);
     }
 
     @DeleteMapping("/delete")
@@ -52,7 +51,7 @@ public class AppointmentController {
     public List<AppointmentDto> getAll() {
         List<Appointment> appointments = appointmentService.getAll();
 
-        return toDtoService.toDto2(appointments);
+        return toDtoService.appointmentToDto(appointments);
     }
 
 }

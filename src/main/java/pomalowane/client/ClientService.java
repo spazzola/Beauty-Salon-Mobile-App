@@ -17,7 +17,7 @@ public class ClientService {
 
     public Client createClient(ClientDto clientDto) {
         validateClient(clientDto);
-        Client client = fromDtoService.fromDto(clientDto);
+        Client client = fromDtoService.clientFromDto(clientDto);
         return clientDao.save(client);
     }
 

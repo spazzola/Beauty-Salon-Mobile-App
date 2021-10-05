@@ -18,34 +18,31 @@ import java.util.stream.Collectors;
 @Service
 public class ToDtoService {
 
-    public AppointmentDetailsDto toDto(AppointmentDetails appointmentDetails) {
-        //AppointmentDto appointmentDto = toDto(appointmentDetails.getAppointment());
-        WorkDto workDto = toDto(appointmentDetails.getWork());
+    public AppointmentDetailsDto appointmentDetailsToDto(AppointmentDetails appointmentDetails) {
+        WorkDto workDto = workToDto(appointmentDetails.getWork());
 
         return AppointmentDetailsDto.builder()
                 .id(appointmentDetails.getId())
-                //.appointment(appointmentDto)
                 .work(workDto)
                 .build();
     }
 
-    public List<AppointmentDto> toDto2(List<Appointment> appointments) {
+    public List<AppointmentDto> appointmentToDto(List<Appointment> appointments) {
         return appointments.stream()
-                .map(this::toDto)
+                .map(this::appointmentToDto)
                 .collect(Collectors.toList());
     }
 
-    public List<AppointmentDetailsDto> toDto(List<AppointmentDetails> appointmentDetailsList) {
+    public List<AppointmentDetailsDto> appointmentDetailsToDto(List<AppointmentDetails> appointmentDetailsList) {
         return appointmentDetailsList.stream()
-                .map(this::toDto)
+                .map(this::appointmentDetailsToDto)
                 .collect(Collectors.toList());
     }
 
-    public AppointmentDto toDto(Appointment appointment) {
-        UserDto userDto = toDto(appointment.getEmployee());
-        ClientDto clientDto = toDto(appointment.getClient());
-        List<AppointmentDetailsDto> appointmentDetailsDto = toDto(appointment.getAppointmentDetails());
-        //set to appointmentdetailsdto an appointment in loop?
+    public AppointmentDto appointmentToDto(Appointment appointment) {
+        UserDto userDto = userToDto(appointment.getEmployee());
+        ClientDto clientDto = clientToDto(appointment.getClient());
+        List<AppointmentDetailsDto> appointmentDetailsDto = appointmentDetailsToDto(appointment.getAppointmentDetails());
 
         return AppointmentDto.builder()
                 .id(appointment.getId())
@@ -59,7 +56,7 @@ public class ToDtoService {
                 .build();
     }
 
-    public ClientDto toDto(Client client) {
+    public ClientDto clientToDto(Client client) {
         return ClientDto.builder()
                 .id(client.getId())
                 .name(client.getName())
@@ -70,14 +67,14 @@ public class ToDtoService {
                 .build();
     }
 
-    public List<ClientDto> toDto3(List<Client> clients) {
+    public List<ClientDto> clientToDto(List<Client> clients) {
         return clients.stream()
-                .map(this::toDto)
+                .map(this::clientToDto)
                 .collect(Collectors.toList());
     }
 
-    public WorkDto toDto(Work work) {
-        WorkDto workDto = WorkDto.builder()
+    public WorkDto workToDto(Work work) {
+        return WorkDto.builder()
                 .id(work.getId())
                 .name(work.getName())
                 .price(work.getPrice())
@@ -85,22 +82,15 @@ public class ToDtoService {
                 .minutesDuration(work.getMinutesDuration())
 
                 .build();
-
-        //if (work.getAppointmentDetails() != null) {
-            //List<AppointmentDetailsDto> appointmentDetailsDto = toDto(work.getAppointmentDetails());
-            //workDto.setAppointmentDetails(appointmentDetailsDto);
-        //}
-
-        return workDto;
     }
 
-    public List<WorkDto> toDto5(List<Work> works) {
+    public List<WorkDto> workToDto(List<Work> works) {
         return works.stream()
-                .map(this::toDto)
+                .map(this::workToDto)
                 .collect(Collectors.toList());
     }
 
-    public UserDto toDto(User user) {
+    public UserDto userToDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .login(user.getLogin())
@@ -114,9 +104,9 @@ public class ToDtoService {
                 .build();
     }
 
-    public List<UserDto> toDto4(List<User> users) {
+    public List<UserDto> userToDto(List<User> users) {
         return users.stream()
-                .map(this::toDto)
+                .map(this::userToDto)
                 .collect(Collectors.toList());
     }
 

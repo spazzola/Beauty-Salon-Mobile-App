@@ -22,7 +22,7 @@ public class UserController {
     public UserDto createUser(@RequestBody UserDto userDto) {
         User user = userService.createUser(userDto);
 
-        return toDtoService.toDto(user);
+        return toDtoService.userToDto(user);
     }
 
     @PostMapping("/authenticate")
@@ -37,7 +37,7 @@ public class UserController {
     public UserDto updateUser(@RequestBody UserDto userDto) throws Exception {
         User user = userService.updateUser(userDto);
 
-        return toDtoService.toDto(user);
+        return toDtoService.userToDto(user);
     }
 
     @DeleteMapping("/deleteUser")
@@ -49,7 +49,7 @@ public class UserController {
     public List<UserDto> getAll() {
         List<User> users = userService.getAll();
 
-        return toDtoService.toDto4(users);
+        return toDtoService.userToDto(users);
     }
 
 }

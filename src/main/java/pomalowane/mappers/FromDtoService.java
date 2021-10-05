@@ -19,27 +19,8 @@ import java.util.List;
 @Service
 public class FromDtoService {
 
-    private WorkDao workDao;
 
-    public List<AppointmentDetails> fromDto(List<AppointmentDetailsDto> appointmentDetailsDtoList, Appointment appointment) throws Exception {
-        List<AppointmentDetails> appointmentDetailsList = new ArrayList<>();
-        for (AppointmentDetailsDto appointmentDetailsDto : appointmentDetailsDtoList) {
-            Work work = workDao.findById(appointmentDetailsDto.getWork().getId())
-                    .orElseThrow(Exception::new);
-
-            AppointmentDetails appointmentDetails = AppointmentDetails.builder()
-                    .id(appointmentDetailsDto.getId())
-                    .work(work)
-                    .appointment(appointment)
-                    .build();
-
-            appointmentDetailsList.add(appointmentDetails);
-        }
-
-        return appointmentDetailsList;
-    }
-
-    public Client fromDto(ClientDto clientDto) {
+    public Client clientFromDto(ClientDto clientDto) {
         return Client.builder()
                 .id(clientDto.getId())
                 .name(clientDto.getName())
@@ -48,21 +29,6 @@ public class FromDtoService {
                 .mail(clientDto.getMail())
                 .belatedCounter(clientDto.getBelatedCounter())
                 .build();
-    }
-
-    public User fromDto(UserDto userDto) {
-        return User.builder()
-                .id(userDto.getId())
-                .login(userDto.getLogin())
-                .password(userDto.getPassword())
-                .name(userDto.getName())
-                .surname(userDto.getSurname())
-                .phoneNumber(userDto.getPhoneNumber())
-                .mail(userDto.getMail())
-                .role(userDto.getRole())
-                .workedHours(userDto.getWorkedHours())
-                .build();
-
     }
 
 }

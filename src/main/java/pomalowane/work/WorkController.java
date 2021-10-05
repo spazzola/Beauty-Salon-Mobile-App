@@ -20,14 +20,14 @@ public class WorkController {
     public WorkDto createService(@RequestBody CreateWorkRequest createWorkRequest) {
         Work work = workService.createWork(createWorkRequest);
 
-        return toDtoService.toDto(work);
+        return toDtoService.workToDto(work);
     }
 
     @PutMapping("/update")
     public WorkDto updateWork(@RequestBody WorkDto workDto) {
         Work work = workService.updateWork(workDto);
 
-        return toDtoService.toDto(work);
+        return toDtoService.workToDto(work);
     }
 
     @DeleteMapping("/delete")
@@ -41,7 +41,7 @@ public class WorkController {
     public List<WorkDto> getAll() {
         List<Work> works = workService.getAll();
 
-        return toDtoService.toDto5(works);
+        return toDtoService.workToDto(works);
     }
 
 }
