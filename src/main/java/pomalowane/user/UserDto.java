@@ -22,4 +22,17 @@ public class UserDto {
     private String role;
     private double workedHours;
 
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", mail='" + mail + '\'' +
+                ", role='" + role + '\'' +
+                ", workedHours=" + workedHours +
+                '}';
+    }
 }

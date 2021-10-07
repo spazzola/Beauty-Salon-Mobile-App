@@ -45,4 +45,18 @@ public class User {
     @Transient
     private double workedHours;
 
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", mail='" + mail + '\'' +
+                ", role='" + role + '\'' +
+                ", workedHours=" + workedHours +
+                '}';
+    }
 }
