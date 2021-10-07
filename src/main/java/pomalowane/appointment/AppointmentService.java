@@ -1,6 +1,8 @@
 package pomalowane.appointment;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
@@ -32,6 +34,7 @@ public class AppointmentService {
     private AppointmentDao appointmentDao;
     private AppointmentDetailsDao appointmentDetailsDao;
     private SmsService smsService;
+    private static final Logger logger = LogManager.getLogger(AppointmentService.class);
 
 
     @Transactional
@@ -64,7 +67,7 @@ public class AppointmentService {
     @Transactional
     public Appointment updateAppointment(UpdateAppointmentRequest updateAppointmentRequest) throws Exception {
         Appointment appointment = appointmentDao.getById(updateAppointmentRequest.getAppointmentId());
-
+        logger.info("Wizyta przed aktualizacja: " + appointment);
         Client client = clientDao.getById(updateAppointmentRequest.getClientId());
         User employee = userDao.getById(updateAppointmentRequest.getEmployeeId());
 

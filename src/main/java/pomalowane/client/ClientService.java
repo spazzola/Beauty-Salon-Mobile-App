@@ -1,6 +1,8 @@
 package pomalowane.client;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pomalowane.mappers.FromDtoService;
@@ -13,6 +15,7 @@ public class ClientService {
 
     private ClientDao clientDao;
     private FromDtoService fromDtoService;
+    private static final Logger logger = LogManager.getLogger(ClientService.class);
 
 
     @Transactional
@@ -25,7 +28,7 @@ public class ClientService {
     @Transactional
     public Client updateClient(ClientDto clientDto) {
         Client client = clientDao.getById(clientDto.getId());
-
+        logger.info("Klient przed aktualizacja: " + client);
         client.setName(clientDto.getName());
         client.setSurname(clientDto.getSurname());
         client.setPhoneNumber(clientDto.getPhoneNumber());
@@ -43,6 +46,7 @@ public class ClientService {
     public Client increaseBelatedCounter(Long clientId) throws Exception {
         Client client = clientDao.findById(clientId)
                 .orElseThrow(Exception::new);
+        logger.info("Klient przed dodaniem spoznienia: " + client);
 
         int belatedCounter = client.getBelatedCounter();
         belatedCounter += 1;

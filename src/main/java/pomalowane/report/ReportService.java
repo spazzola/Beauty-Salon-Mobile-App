@@ -23,7 +23,6 @@ public class ReportService {
     private CostDao costDao;
     private AppointmentDao appointmentDao;
 
-
     @Transactional
     public Report generateMonthlyReport(int month, int year) {
         List<Appointment> appointments = appointmentDao.getMonthAppointments(month, year);

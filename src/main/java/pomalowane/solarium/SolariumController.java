@@ -1,7 +1,10 @@
 package pomalowane.solarium;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
+import pomalowane.user.UserController;
 
 @AllArgsConstructor
 @RestController
@@ -11,11 +14,13 @@ public class SolariumController {
 
     private SolariumMapper solariumMapper;
     private SolariumService solariumService;
-
+    private static final Logger logger = LogManager.getLogger(SolariumController.class);
 
     @PostMapping("/use")
     public SolariumDto useSolarium(@RequestBody SolariumDto solariumDto) {
+        logger.info("Dodawanie uzycie solarium: " + solariumDto);
         Solarium solarium = solariumService.useSolarium(solariumDto);
+        logger.info("Dodano uzycie solarium: " + solarium);
 
         return solariumMapper.toDto(solarium);
     }

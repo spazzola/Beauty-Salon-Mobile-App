@@ -3,6 +3,8 @@ package pomalowane.cost;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +14,7 @@ public class CostService {
 
     private CostDao costDao;
     private CostMapper costMapper;
-
+    private static final Logger logger = LogManager.getLogger(CostService.class);
 
     @Transactional
     public Cost createCost(CostDto costDto) {
@@ -35,6 +37,7 @@ public class CostService {
     @Transactional
     public Cost updateCost(CostDto costDto) {
         Cost cost = costDao.getById(costDto.getId());
+        logger.info("Koszt przed aktualizacja: " + cost);
         cost.setAddedDate(costDto.getAddedDate());
         cost.setName(costDto.getName());
         cost.setValue(costDto.getValue());

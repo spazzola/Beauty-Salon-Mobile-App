@@ -2,6 +2,8 @@ package pomalowane.work;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class WorkService {
 
     private WorkDao workDao;
+    private static final Logger logger = LogManager.getLogger(WorkService.class);
 
 
     public Work createWork(CreateWorkRequest createWorkRequest) {
@@ -31,6 +34,7 @@ public class WorkService {
     @Transactional
     public Work updateWork(WorkDto workDto) {
         Work work = workDao.getById(workDto.getId());
+        logger.info("Usluga przed aktualizacja: " + work);
         work.setName(workDto.getName());
         work.setPrice(workDto.getPrice());
         work.setHoursDuration(workDto.getHoursDuration());

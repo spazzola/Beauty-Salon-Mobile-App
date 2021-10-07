@@ -1,6 +1,8 @@
 package pomalowane.user;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +26,7 @@ public class UserService {
     private AuthenticationManager authenticationManager;
     private MyUserDetailsService myUserDetailsService;
     private JwtUtil jwtUtil;
-
+    private static final Logger logger = LogManager.getLogger(User.class);
 
     @Transactional
     public User createUser(UserDto userDto) {
@@ -77,7 +79,7 @@ public class UserService {
     public User updateUser(UserDto userDto) throws Exception {
         User user = userDao.findById(userDto.getId())
                 .orElseThrow(Exception::new);
-
+        logger.info("Uzytkownik przed aktualizacja: " + user.toString());
         final String encryptedPassword;
         if (checkIfPasswordChanged(user, userDto)) {
             encryptedPassword = passwordEncoder.encode(userDto.getPassword());
