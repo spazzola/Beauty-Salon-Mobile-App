@@ -1,5 +1,6 @@
 package pomalowane.sms;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.json.JSONArray;
@@ -20,13 +21,18 @@ public class SmsService {
 
 
     public void setSmsReminder(Appointment appointment) throws Exception {
+        List<Sms> smsReminders = new ArrayList<>();
         String dayBefore = getDateDayBefore(appointment);
-        Sms sms = buildSms(appointment,  dayBefore);
-        smsDao.save(sms);
+        Sms smsDayBefore = buildSms(appointment,  dayBefore);
+        smsDao.save(smsDayBefore);
+        smsReminders.add(smsDayBefore);
 
         String twoHoursBefore = getDateTwoHoursBefore(appointment);
-        sms = buildSms(appointment, twoHoursBefore);
-        smsDao.save(sms);
+        Sms smsTwoHoursBefore = buildSms(appointment, twoHoursBefore);
+        smsDao.save(smsTwoHoursBefore);
+        smsReminders.add(smsTwoHoursBefore);
+
+        appointment.setSmsReminders(smsReminders);
     }
 
     public void updateSmsReminder(Appointment appointment) throws Exception {
