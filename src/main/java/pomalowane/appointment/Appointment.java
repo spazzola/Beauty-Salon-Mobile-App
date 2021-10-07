@@ -2,10 +2,7 @@ package pomalowane.appointment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
 import pomalowane.client.Client;
 import pomalowane.sms.Sms;
@@ -17,7 +14,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -60,5 +58,22 @@ public class Appointment {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User employee;
+
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "id=" + id +
+                ", startDate=" + startDate +
+                ", finishDate=" + finishDate +
+                ", appointmentDetails=" + appointmentDetails +
+                ", smsReminders=" + smsReminders +
+                ", note='" + note + '\'' +
+                ", worksSum=" + worksSum +
+                ", percentageValueToAdd=" + percentageValueToAdd +
+                ", client=" + client +
+                ", employee=" + employee +
+                '}';
+    }
 
 }

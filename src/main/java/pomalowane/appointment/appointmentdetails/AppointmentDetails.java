@@ -1,17 +1,15 @@
 package pomalowane.appointment.appointmentdetails;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pomalowane.appointment.Appointment;
 import pomalowane.work.Work;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,4 +32,12 @@ public class AppointmentDetails {
     @JoinColumn(name = "work_fk")
     private Work work;
 
+
+    @Override
+    public String toString() {
+        return "AppointmentDetails{" +
+                "id=" + id +
+                ", work=" + work +
+                '}';
+    }
 }
