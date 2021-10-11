@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.JDBCException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class WorkService {
                 .price(createWorkRequest.getPrice())
                 .hoursDuration(createWorkRequest.getHoursDuration())
                 .minutesDuration(createWorkRequest.getMinutesDuration())
+                .iconId(createWorkRequest.getIconId())
                 .build();
 
         return workDao.save(work);
@@ -39,13 +42,20 @@ public class WorkService {
         work.setPrice(workDto.getPrice());
         work.setHoursDuration(workDto.getHoursDuration());
         work.setMinutesDuration(workDto.getMinutesDuration());
+        work.setIconId(workDto.getIconId());
 
         return workDao.save(work);
     }
 
-    @Transactional
+    //@Transactional
     public void deleteWork(Long id) {
-        workDao.deleteById(id);
+        try {
+            workDao.deleteById(id);
+        } catch (Exception exception) {
+            System.out.println("ERROR --------");
+        }
+        System.out.println("A TERAZ TU --------");
+
     }
 
     @Transactional

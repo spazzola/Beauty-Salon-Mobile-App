@@ -80,7 +80,7 @@ public class ToDtoService {
                 .price(work.getPrice())
                 .hoursDuration(work.getHoursDuration())
                 .minutesDuration(work.getMinutesDuration())
-
+                .iconId(work.getIconId())
                 .build();
     }
 

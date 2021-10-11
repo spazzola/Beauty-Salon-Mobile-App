@@ -37,6 +37,8 @@ public class Work {
     @NotNull
     private int minutesDuration;
 
+    private Long iconId;
+
 //    //TODO to delete?
 //    @OneToMany(mappedBy = "work", cascade = CascadeType.ALL)
 //    private List<AppointmentDetails> appointmentDetails;
