@@ -87,8 +87,7 @@ public class AppointmentService {
         appointment.setClient(client);
         appointment.setEmployee(employee);
         appointment.setPercentageValueToAdd(updateAppointmentRequest.getPercentageValueToAdd());
-
-
+        appointment.setNote(updateAppointmentRequest.getNote());
 
         if (appointment.getStartDate() != updateAppointmentRequest.getStartDate()) {
             appointment.setStartDate(updateAppointmentRequest.getStartDate());
