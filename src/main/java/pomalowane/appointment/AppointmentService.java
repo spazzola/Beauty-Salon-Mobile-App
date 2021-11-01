@@ -3,6 +3,10 @@ package pomalowane.appointment;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.JDBCException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
@@ -16,7 +20,10 @@ import pomalowane.work.Work;
 import pomalowane.work.WorkDao;
 import pomalowane.user.User;
 
+import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,6 +58,7 @@ public class AppointmentService {
                 .client(client)
                 .employee(employee)
                 .percentageValueToAdd(createAppointmentRequest.getPercentageValueToAdd())
+                .note(createAppointmentRequest.getNote())
                 .build();
 
         List<AppointmentDetails> appointmentDetailsList = createAndSaveAppointmentDetails(createAppointmentRequest.getWorkIds(), appointment);
@@ -59,7 +67,7 @@ public class AppointmentService {
 
         appointment.setAppointmentDetails(appointmentDetailsList);
 
-        smsService.setSmsReminder(appointment);
+        //smsService.setSmsReminder(appointment);
 
         return appointmentDao.save(appointment);
     }
@@ -67,6 +75,11 @@ public class AppointmentService {
     @Transactional
     public Appointment updateAppointment(UpdateAppointmentRequest updateAppointmentRequest) throws Exception {
         Appointment appointment = appointmentDao.getById(updateAppointmentRequest.getAppointmentId());
+
+        if (!appointment.getStartDate().isEqual(updateAppointmentRequest.getStartDate())) {
+            validateDate(updateAppointmentRequest.getStartDate(), updateAppointmentRequest.getEmployeeId());
+        }
+
         logger.info("Wizyta przed aktualizacja: " + appointment);
         Client client = clientDao.getById(updateAppointmentRequest.getClientId());
         User employee = userDao.getById(updateAppointmentRequest.getEmployeeId());
@@ -76,9 +89,10 @@ public class AppointmentService {
         appointment.setPercentageValueToAdd(updateAppointmentRequest.getPercentageValueToAdd());
 
 
+
         if (appointment.getStartDate() != updateAppointmentRequest.getStartDate()) {
             appointment.setStartDate(updateAppointmentRequest.getStartDate());
-            smsService.updateSmsReminder(appointment);
+            //smsService.updateSmsReminder(appointment);
         }
 
         List<AppointmentDetails> appointmentDetailsList = appointment.getAppointmentDetails();
@@ -124,21 +138,35 @@ public class AppointmentService {
     }
 
     private void validateAppointment(CreateAppointmentRequest createAppointmentRequest) {
-        validateDate(createAppointmentRequest);
+        validateDate(createAppointmentRequest.getStartDate(), createAppointmentRequest.getEmployeeId());
         validateEmployee(createAppointmentRequest);
         validateClient(createAppointmentRequest);
         validateWorks(createAppointmentRequest);
     }
 
-    private void validateDate(CreateAppointmentRequest createAppointmentRequest) {
-        int month = createAppointmentRequest.getStartDate().getMonth().getValue();
-        int year = createAppointmentRequest.getStartDate().getYear();
-        List<Appointment> appointments = appointmentDao.getMonthAppointments(month, year);
+    //TODO params: startDate, finishDate, userId
+//    private void validateDate(CreateAppointmentRequest createAppointmentRequest) {
+//        int month = createAppointmentRequest.getStartDate().getMonth().getValue();
+//        int year = createAppointmentRequest.getStartDate().getYear();
+//        List<Appointment> appointments = appointmentDao.getUserMonthAppointments(month, year, createAppointmentRequest.getEmployeeId());
+//        for (Appointment appointment : appointments) {
+//            if (createAppointmentRequest.getStartDate().isAfter(appointment.getStartDate()) && createAppointmentRequest.getStartDate().isBefore(appointment.getFinishDate())) {
+//                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+//            }
+//            if (createAppointmentRequest.getStartDate().isEqual(appointment.getStartDate())) {
+//                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+//            }
+//        }
+//    }
+    private void validateDate(LocalDateTime startDate, Long userId) {
+        int month = startDate.getMonth().getValue();
+        int year = startDate.getYear();
+        List<Appointment> appointments = appointmentDao.getUserMonthAppointments(month, year, userId);
         for (Appointment appointment : appointments) {
-            if (createAppointmentRequest.getStartDate().isAfter(appointment.getStartDate()) && createAppointmentRequest.getStartDate().isBefore(appointment.getFinishDate())) {
+            if (startDate.isAfter(appointment.getStartDate()) && startDate.isBefore(appointment.getFinishDate())) {
                 throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
             }
-            if (createAppointmentRequest.getStartDate().isEqual(appointment.getStartDate())) {
+            if (startDate.isEqual(appointment.getStartDate())) {
                 throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
             }
         }
