@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import pomalowane.user.UserController;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @Service
 public class SolariumService {
@@ -17,10 +19,11 @@ public class SolariumService {
     private static final Logger logger = LogManager.getLogger(SolariumService.class);
 
     @Transactional
-    public Solarium useSolarium(SolariumDto solariumDto) {
+    public Solarium useSolarium(SolariumDto solariumDto) throws Exception {
         int month = solariumDto.getUsedDate().getMonth().getValue();
         int year = solariumDto.getUsedDate().getYear();
-        Solarium solarium = solariumDao.getMonthSolarium(month, year);
+        Solarium solarium = solariumDao.getMonthSolarium(month, year)
+                .orElseThrow(Exception::new);
         logger.info("Solarium przed uzyciem: " + solarium);
         if (solarium == null) {
             solarium = createNewSolarium(solariumDto);
@@ -32,7 +35,14 @@ public class SolariumService {
 
     @Transactional
     public Solarium getMonthSolarium(int month, int year) {
-        return solariumDao.getMonthSolarium(month, year);
+        if (solariumDao.getMonthSolarium(month, year).isPresent()) {
+            return solariumDao.getMonthSolarium(month, year).get();
+        } else {
+            return Solarium.builder()
+                    .usedDate(LocalDateTime.of(year, month, 1, 0,0))
+                    .usedTime(0)
+                    .build();
+        }
     }
 
     private Solarium createNewSolarium(SolariumDto solariumDto) {

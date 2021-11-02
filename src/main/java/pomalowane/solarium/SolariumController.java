@@ -17,7 +17,7 @@ public class SolariumController {
     private static final Logger logger = LogManager.getLogger(SolariumController.class);
 
     @PostMapping("/use")
-    public SolariumDto useSolarium(@RequestBody SolariumDto solariumDto) {
+    public SolariumDto useSolarium(@RequestBody SolariumDto solariumDto) throws Exception {
         logger.info("Dodawanie uzycie solarium: " + solariumDto);
         Solarium solarium = solariumService.useSolarium(solariumDto);
         logger.info("Dodano uzycie solarium: " + solarium);
