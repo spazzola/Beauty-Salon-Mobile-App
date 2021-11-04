@@ -15,6 +15,6 @@ public class CreateWorkRequest {
     private BigDecimal price;
     private int hoursDuration;
     private int minutesDuration;
-    private Long iconId;
+    private String iconName;
 
 }

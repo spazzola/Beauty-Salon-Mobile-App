@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.JDBCException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -28,7 +29,8 @@ public class WorkService {
                 .price(createWorkRequest.getPrice())
                 .hoursDuration(createWorkRequest.getHoursDuration())
                 .minutesDuration(createWorkRequest.getMinutesDuration())
-                .iconId(createWorkRequest.getIconId())
+                .iconName(createWorkRequest.getIconName())
+                .isVisible(true)
                 .build();
 
         return workDao.save(work);
@@ -42,7 +44,7 @@ public class WorkService {
         work.setPrice(workDto.getPrice());
         work.setHoursDuration(workDto.getHoursDuration());
         work.setMinutesDuration(workDto.getMinutesDuration());
-        work.setIconId(workDto.getIconId());
+        work.setIconName(workDto.getIconName());
 
         return workDao.save(work);
     }
@@ -52,15 +54,15 @@ public class WorkService {
         try {
             workDao.deleteById(id);
         } catch (Exception exception) {
-            System.out.println("ERROR --------");
+            Work work = workDao.getById(id);
+            work.setVisible(false);
+            workDao.save(work);
         }
-        System.out.println("A TERAZ TU --------");
-
     }
 
     @Transactional
     public List<Work> getAll() {
-        return workDao.findAll();
+        return workDao.findByIsVisibleTrue();
     }
 
     private void validateWork(CreateWorkRequest createWorkRequest) {
@@ -79,6 +81,9 @@ public class WorkService {
         if (createWorkRequest.getHoursDuration() <= 0 && createWorkRequest.getMinutesDuration() <= 0) {
             throw new IllegalArgumentException("Bad value of Work's hoursDuration: " + createWorkRequest.getHoursDuration() +
                     ", and minutesDuration: " + createWorkRequest.getMinutesDuration());
+        }
+        if (createWorkRequest.getIconName() == null || createWorkRequest.getIconName().equals("")) {
+            throw new IllegalArgumentException("Bad value of Work's iconName: " + createWorkRequest.getName());
         }
     }
 

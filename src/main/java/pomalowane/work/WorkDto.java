@@ -20,7 +20,7 @@ public class WorkDto {
     private BigDecimal price;
     private int hoursDuration;
     private int minutesDuration;
-    private Long iconId;
+    private String iconName;
     //private List<AppointmentDetailsDto> appointmentDetails;
 
 }

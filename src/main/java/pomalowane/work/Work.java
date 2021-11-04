@@ -1,10 +1,7 @@
 package pomalowane.work;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
 
 import javax.persistence.*;
@@ -12,7 +9,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,10 +35,25 @@ public class Work {
     @NotNull
     private int minutesDuration;
 
-    private Long iconId;
+    private String iconName;
 
-//    //TODO to delete?
-//    @OneToMany(mappedBy = "work", cascade = CascadeType.ALL)
-//    private List<AppointmentDetails> appointmentDetails;
+    private boolean isVisible;
+
+    @OneToMany(mappedBy = "work")
+    private List<AppointmentDetails> appointmentDetails;
+
+
+    @Override
+    public String toString() {
+        return "Work{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", hoursDuration=" + hoursDuration +
+                ", minutesDuration=" + minutesDuration +
+                ", iconName='" + iconName + '\'' +
+                ", isVisible=" + isVisible +
+                '}';
+    }
 
 }
