@@ -62,7 +62,6 @@ public class ToDtoService {
                 .name(client.getName())
                 .surname(client.getSurname())
                 .phoneNumber(client.getPhoneNumber())
-                .mail(client.getMail())
                 .belatedCounter(client.getBelatedCounter())
                 .build();
     }
@@ -80,7 +79,7 @@ public class ToDtoService {
                 .price(work.getPrice())
                 .hoursDuration(work.getHoursDuration())
                 .minutesDuration(work.getMinutesDuration())
-                .iconId(work.getIconId())
+                .iconName(work.getIconName())
                 .build();
     }
 
@@ -98,7 +97,6 @@ public class ToDtoService {
                 .name(user.getName())
                 .surname(user.getSurname())
                 .phoneNumber(user.getPhoneNumber())
-                .mail(user.getMail())
                 .role(user.getRole())
                 .workedHours(user.getWorkedHours())
                 .build();

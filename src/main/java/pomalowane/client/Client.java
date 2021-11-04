@@ -30,9 +30,8 @@ public class Client {
     @NotNull
     private String phoneNumber;
 
-    @NotNull
-    private String mail;
-
     private int belatedCounter;
+
+    private boolean isVisible;
 
 }

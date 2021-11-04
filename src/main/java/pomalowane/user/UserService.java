@@ -38,10 +38,10 @@ public class UserService {
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
                 .phoneNumber(userDto.getPhoneNumber())
-                .mail(userDto.getMail())
                 .login(userDto.getLogin())
                 .password(encryptedPassword)
                 .role(userDto.getRole())
+                .isVisible(true)
                 .build();
 
         return userDao.save(user);
@@ -97,15 +97,18 @@ public class UserService {
 
     @Transactional
     public List<User> getAll() {
-        return userDao.findAll();
+        return userDao.findByIsVisibleTrue();
     }
 
-    @Transactional
+    //@Transactional
     public void deleteUser(Long id) throws Exception {
-        User user = userDao.findById(id)
-                .orElseThrow(Exception::new);
-
-        userDao.delete(user);
+        try {
+            userDao.deleteById(id);
+        } catch (Exception exception) {
+            User user = userDao.getById(id);
+            user.setVisible(false);
+            userDao.save(user);
+        }
     }
 
     private void validateUser(UserDto userDto) {
@@ -127,6 +130,9 @@ public class UserService {
     }
 
     private boolean checkIfPasswordChanged(User user, UserDto userDto) {
+        if (userDto.getPassword() == null) {
+            return false;
+        }
         MyUserDetails userDetails = myUserDetailsService.loadUserByUsername(user.getLogin());
         return !passwordEncoder.matches(userDto.getPassword(), userDetails.getPassword());
     }

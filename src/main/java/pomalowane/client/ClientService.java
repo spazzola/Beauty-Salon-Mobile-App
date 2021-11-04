@@ -32,14 +32,19 @@ public class ClientService {
         client.setName(clientDto.getName());
         client.setSurname(clientDto.getSurname());
         client.setPhoneNumber(clientDto.getPhoneNumber());
-        client.setMail(clientDto.getMail());
 
         return clientDao.save(client);
     }
 
-    @Transactional
+    //@Transactional
     public void deleteClient(Long id) {
-        clientDao.deleteById(id);
+        try {
+            clientDao.deleteById(id);
+        } catch (Exception exception) {
+            Client client = clientDao.getById(id);
+            client.setVisible(false);
+            clientDao.save(client);
+        }
     }
 
     @Transactional
@@ -57,7 +62,7 @@ public class ClientService {
 
     @Transactional
     public List<Client> getAll() {
-        return clientDao.findAll();
+        return clientDao.findByIsVisibleTrue();
     }
 
     private void validateClient(ClientDto clientDto) {

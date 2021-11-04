@@ -40,4 +40,5 @@ public class AppointmentDetails {
                 ", work=" + work +
                 '}';
     }
+
 }

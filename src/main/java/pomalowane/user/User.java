@@ -37,13 +37,12 @@ public class User {
     private String phoneNumber;
 
     @NotNull
-    private String mail;
-
-    @NotNull
     private String role;
 
     @Transient
     private double workedHours;
+
+    private boolean isVisible;
 
 
     @Override
@@ -54,7 +53,6 @@ public class User {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", mail='" + mail + '\'' +
                 ", role='" + role + '\'' +
                 ", workedHours=" + workedHours +
                 '}';

@@ -26,8 +26,8 @@ public class FromDtoService {
                 .name(clientDto.getName())
                 .surname(clientDto.getSurname())
                 .phoneNumber(clientDto.getPhoneNumber())
-                .mail(clientDto.getMail())
                 .belatedCounter(clientDto.getBelatedCounter())
+                .isVisible(true)
                 .build();
     }
 

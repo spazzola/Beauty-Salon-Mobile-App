@@ -18,9 +18,9 @@ public class UserDto {
     private String name;
     private String surname;
     private String phoneNumber;
-    private String mail;
     private String role;
     private double workedHours;
+    private boolean isVisible;
 
     @Override
     public String toString() {
@@ -30,7 +30,6 @@ public class UserDto {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", mail='" + mail + '\'' +
                 ", role='" + role + '\'' +
                 ", workedHours=" + workedHours +
                 '}';

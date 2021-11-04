@@ -16,7 +16,7 @@ public class ClientDto {
     private String name;
     private String surname;
     private String phoneNumber;
-    private String mail;
     private int belatedCounter;
+    private boolean isVisible;
 
 }
