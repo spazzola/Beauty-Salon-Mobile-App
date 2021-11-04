@@ -13,4 +13,9 @@ public interface CostDao extends JpaRepository<Cost, Long> {
             nativeQuery = true)
     List<Cost> getMonthCosts(int month, int year);
 
+    @Query(value = "SELECT * FROM costs c " +
+            "WHERE YEAR(c.added_Date) = ?1",
+            nativeQuery = true)
+    List<Cost> getYearCosts(int year);
+
 }

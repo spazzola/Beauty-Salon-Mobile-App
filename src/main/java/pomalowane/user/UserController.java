@@ -46,7 +46,7 @@ public class UserController {
         return toDtoService.userToDto(user);
     }
 
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/delete")
     public void deleteUser(@RequestParam("id") Long id) throws Exception {
         logger.info("Usuwanie uzytkownika o id: " + id);
         userService.deleteUser(id);

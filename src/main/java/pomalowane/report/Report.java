@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pomalowane.user.User;
+import pomalowane.user.UserDto;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,6 @@ public class Report {
 
     private BigDecimal income;
 
-    private List<User> users;
+    private List<UserDto> users;
 
 }

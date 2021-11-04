@@ -13,6 +13,10 @@ public interface AppointmentDao extends JpaRepository<Appointment, Long> {
             nativeQuery = true)
     List<Appointment> getMonthAppointments(int month, int year);
 
+    @Query(value = "SELECT * FROM appointments a " +
+            "WHERE YEAR(a.start_Date) = ?1",
+            nativeQuery = true)
+    List<Appointment> getYearAppointments(int year);
 
     @Query(value = "SELECT * FROM appointments a " +
             "WHERE MONTH(a.start_Date) = ?1 AND YEAR(a.start_Date) = ?2 AND user_id = ?3",
