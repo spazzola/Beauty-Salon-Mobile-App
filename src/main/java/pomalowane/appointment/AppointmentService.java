@@ -3,31 +3,22 @@ package pomalowane.appointment;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.JDBCException;
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
 import pomalowane.appointment.appointmentdetails.AppointmentDetailsDao;
 import pomalowane.client.Client;
 import pomalowane.client.ClientDao;
-import pomalowane.sms.SerwerSMS;
 import pomalowane.sms.SmsService;
 import pomalowane.user.UserDao;
 import pomalowane.work.Work;
 import pomalowane.work.WorkDao;
 import pomalowane.user.User;
 
-import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +53,8 @@ public class AppointmentService {
                 .build();
 
         List<AppointmentDetails> appointmentDetailsList = createAndSaveAppointmentDetails(createAppointmentRequest.getWorkIds(), appointment);
-        calculateAndSetFinishDate(appointment, appointmentDetailsList);
+        LocalDateTime finishDate = calculateFinishDate(appointment.getStartDate(), createAppointmentRequest.getWorkIds());
+        appointment.setFinishDate(finishDate);
         calculateAndSetWorksSum(appointment, appointmentDetailsList);
 
         appointment.setAppointmentDetails(appointmentDetailsList);
@@ -75,9 +67,14 @@ public class AppointmentService {
     @Transactional
     public Appointment updateAppointment(UpdateAppointmentRequest updateAppointmentRequest) throws Exception {
         Appointment appointment = appointmentDao.getById(updateAppointmentRequest.getAppointmentId());
-
-        if (!appointment.getStartDate().isEqual(updateAppointmentRequest.getStartDate())) {
-            validateDate(updateAppointmentRequest.getStartDate(), updateAppointmentRequest.getEmployeeId());
+        LocalDateTime startDate = updateAppointmentRequest.getStartDate();
+        if (!appointment.getStartDate().isEqual(startDate)) {
+            int month = startDate.getMonth().getValue();
+            int year = startDate.getYear();
+            List<Appointment> appointments = appointmentDao.getUserMonthAppointments(month, year, updateAppointmentRequest.getEmployeeId());
+            appointments.removeIf(searchedAppointment -> searchedAppointment.getId().equals(updateAppointmentRequest.getAppointmentId()));
+            LocalDateTime finishDate = calculateFinishDate(updateAppointmentRequest.getStartDate(), updateAppointmentRequest.getWorkIds());
+            validateDate(appointments, updateAppointmentRequest.getStartDate(), finishDate);
         }
 
         logger.info("Wizyta przed aktualizacja: " + appointment);
@@ -89,6 +86,7 @@ public class AppointmentService {
         appointment.setPercentageValueToAdd(updateAppointmentRequest.getPercentageValueToAdd());
         appointment.setNote(updateAppointmentRequest.getNote());
 
+        //TODO change != to equals()
         if (appointment.getStartDate() != updateAppointmentRequest.getStartDate()) {
             appointment.setStartDate(updateAppointmentRequest.getStartDate());
             //smsService.updateSmsReminder(appointment);
@@ -97,19 +95,25 @@ public class AppointmentService {
         List<AppointmentDetails> appointmentDetailsList = appointment.getAppointmentDetails();
         if (appointmentDetailsList.size() == updateAppointmentRequest.getWorkIds().size()) {
             reassignWorksToAppointmentDetails(appointment, updateAppointmentRequest);
-            calculateAndSetFinishDate(appointment, appointmentDetailsList);
+            List<Long> workIds = getWorksAppointmentDetailsIds(appointment);
+            LocalDateTime finishDate = calculateFinishDate(updateAppointmentRequest.getStartDate(), workIds);
+            appointment.setFinishDate(finishDate);
             calculateAndSetWorksSum(appointment, appointmentDetailsList);
         }
 
         if (appointmentDetailsList.size() > updateAppointmentRequest.getWorkIds().size()) {
             deleteAppointmentDetails(appointment, updateAppointmentRequest);
-            calculateAndSetFinishDate(appointment, appointmentDetailsList);
+            List<Long> workIds = getWorksAppointmentDetailsIds(appointment);
+            LocalDateTime finishDate = calculateFinishDate(updateAppointmentRequest.getStartDate(), workIds);
+            appointment.setFinishDate(finishDate);
             calculateAndSetWorksSum(appointment, appointmentDetailsList);
         }
 
         if (appointmentDetailsList.size() < updateAppointmentRequest.getWorkIds().size()) {
             createAndSaveAppointmentDetails(appointment, updateAppointmentRequest);
-            calculateAndSetFinishDate(appointment, appointmentDetailsList);
+            List<Long> workIds = getWorksAppointmentDetailsIds(appointment);
+            LocalDateTime finishDate = calculateFinishDate(updateAppointmentRequest.getStartDate(), workIds);
+            appointment.setFinishDate(finishDate);
             calculateAndSetWorksSum(appointment, appointmentDetailsList);
         }
 
@@ -136,11 +140,17 @@ public class AppointmentService {
         return appointmentDao.findAll();
     }
 
-    private void validateAppointment(CreateAppointmentRequest createAppointmentRequest) {
-        validateDate(createAppointmentRequest.getStartDate(), createAppointmentRequest.getEmployeeId());
+    private void validateAppointment(CreateAppointmentRequest createAppointmentRequest) throws Exception {
+        int month = createAppointmentRequest.getStartDate().getMonth().getValue();
+        int year = createAppointmentRequest.getStartDate().getYear();
+        List<Appointment> appointments = appointmentDao.getUserMonthAppointments(month, year, createAppointmentRequest.getEmployeeId());
+
         validateEmployee(createAppointmentRequest);
         validateClient(createAppointmentRequest);
         validateWorks(createAppointmentRequest);
+
+        LocalDateTime finishDate = calculateFinishDate(createAppointmentRequest.getStartDate(), createAppointmentRequest.getWorkIds());
+        validateDate(appointments, createAppointmentRequest.getStartDate(), finishDate);
     }
 
     //TODO params: startDate, finishDate, userId
@@ -157,12 +167,13 @@ public class AppointmentService {
 //            }
 //        }
 //    }
-    private void validateDate(LocalDateTime startDate, Long userId) {
-        int month = startDate.getMonth().getValue();
-        int year = startDate.getYear();
-        List<Appointment> appointments = appointmentDao.getUserMonthAppointments(month, year, userId);
+
+    private void validateDate(List<Appointment> appointments, LocalDateTime startDate, LocalDateTime endDate) {
         for (Appointment appointment : appointments) {
             if (startDate.isAfter(appointment.getStartDate()) && startDate.isBefore(appointment.getFinishDate())) {
+                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+            }
+            if (endDate.isAfter(appointment.getStartDate()) && endDate.isBefore(appointment.getFinishDate())) {
                 throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
             }
             if (startDate.isEqual(appointment.getStartDate())) {
@@ -176,7 +187,7 @@ public class AppointmentService {
     }
 
     private void validateClient(CreateAppointmentRequest createAppointmentRequest) {
-        validateId(createAppointmentRequest.getClientId(),"Client");
+        validateId(createAppointmentRequest.getClientId(), "Client");
     }
 
     private void validateWorks(CreateAppointmentRequest createAppointmentRequest) {
@@ -227,7 +238,21 @@ public class AppointmentService {
         }
     }
 
-    private Appointment calculateAndSetFinishDate(Appointment appointment, List<AppointmentDetails> appointmentDetailsList) {
+    //    private Appointment calculateAndSetFinishDate(Appointment appointment, List<AppointmentDetails> appointmentDetailsList) {
+//        int hoursSum = 0;
+//        int minutesSum = 0;
+//        for (AppointmentDetails appointmentDetails : appointmentDetailsList) {
+//            hoursSum += appointmentDetails.getWork().getHoursDuration();
+//            minutesSum += appointmentDetails.getWork().getMinutesDuration();
+//        }
+//
+//        LocalDateTime startDate = appointment.getStartDate();
+//        LocalDateTime finishDate = startDate.plusHours(hoursSum).plusMinutes(minutesSum);
+//        appointment.setFinishDate(finishDate);
+//
+//        return appointment;
+//    }
+    private LocalDateTime calculateAppointmentFinishDate(LocalDateTime startDate, List<AppointmentDetails> appointmentDetailsList) {
         int hoursSum = 0;
         int minutesSum = 0;
         for (AppointmentDetails appointmentDetails : appointmentDetailsList) {
@@ -235,11 +260,21 @@ public class AppointmentService {
             minutesSum += appointmentDetails.getWork().getMinutesDuration();
         }
 
-        LocalDateTime startDate = appointment.getStartDate();
-        LocalDateTime finishDate = startDate.plusHours(hoursSum).plusMinutes(minutesSum);
-        appointment.setFinishDate(finishDate);
+        return startDate.plusHours(hoursSum).plusMinutes(minutesSum);
+    }
 
-        return appointment;
+    private LocalDateTime calculateFinishDate(LocalDateTime startDate, List<Long> workIds) throws Exception {
+        int hoursSum = 0;
+        int minutesSum = 0;
+
+        for (Long workId: workIds) {
+            Work work = workDao.findById(workId)
+                    .orElseThrow(Exception::new);
+            hoursSum += work.getHoursDuration();
+            minutesSum += work.getMinutesDuration();
+        }
+
+        return startDate.plusHours(hoursSum).plusMinutes(minutesSum);
     }
 
     private void calculateAndSetWorksSum(Appointment appointment, List<AppointmentDetails> appointmentDetailsList) throws Exception {
