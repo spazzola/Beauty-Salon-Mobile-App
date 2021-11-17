@@ -74,6 +74,7 @@ public class AppointmentService {
             List<Appointment> appointments = appointmentDao.getUserMonthAppointments(month, year, updateAppointmentRequest.getEmployeeId());
             appointments.removeIf(searchedAppointment -> searchedAppointment.getId().equals(updateAppointmentRequest.getAppointmentId()));
             LocalDateTime finishDate = calculateFinishDate(updateAppointmentRequest.getStartDate(), updateAppointmentRequest.getWorkIds());
+
             validateDate(appointments, updateAppointmentRequest.getStartDate(), finishDate);
         }
 
@@ -86,8 +87,7 @@ public class AppointmentService {
         appointment.setPercentageValueToAdd(updateAppointmentRequest.getPercentageValueToAdd());
         appointment.setNote(updateAppointmentRequest.getNote());
 
-        //TODO change != to equals()
-        if (appointment.getStartDate() != updateAppointmentRequest.getStartDate()) {
+        if (!appointment.getStartDate().equals(updateAppointmentRequest.getStartDate())) {
             appointment.setStartDate(updateAppointmentRequest.getStartDate());
             //smsService.updateSmsReminder(appointment);
         }
@@ -152,21 +152,6 @@ public class AppointmentService {
         LocalDateTime finishDate = calculateFinishDate(createAppointmentRequest.getStartDate(), createAppointmentRequest.getWorkIds());
         validateDate(appointments, createAppointmentRequest.getStartDate(), finishDate);
     }
-
-    //TODO params: startDate, finishDate, userId
-//    private void validateDate(CreateAppointmentRequest createAppointmentRequest) {
-//        int month = createAppointmentRequest.getStartDate().getMonth().getValue();
-//        int year = createAppointmentRequest.getStartDate().getYear();
-//        List<Appointment> appointments = appointmentDao.getUserMonthAppointments(month, year, createAppointmentRequest.getEmployeeId());
-//        for (Appointment appointment : appointments) {
-//            if (createAppointmentRequest.getStartDate().isAfter(appointment.getStartDate()) && createAppointmentRequest.getStartDate().isBefore(appointment.getFinishDate())) {
-//                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
-//            }
-//            if (createAppointmentRequest.getStartDate().isEqual(appointment.getStartDate())) {
-//                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
-//            }
-//        }
-//    }
 
     private void validateDate(List<Appointment> appointments, LocalDateTime startDate, LocalDateTime endDate) {
         for (Appointment appointment : appointments) {
@@ -236,31 +221,6 @@ public class AppointmentService {
         } else {
             return appointment.getAppointmentDetails();
         }
-    }
-
-    //    private Appointment calculateAndSetFinishDate(Appointment appointment, List<AppointmentDetails> appointmentDetailsList) {
-//        int hoursSum = 0;
-//        int minutesSum = 0;
-//        for (AppointmentDetails appointmentDetails : appointmentDetailsList) {
-//            hoursSum += appointmentDetails.getWork().getHoursDuration();
-//            minutesSum += appointmentDetails.getWork().getMinutesDuration();
-//        }
-//
-//        LocalDateTime startDate = appointment.getStartDate();
-//        LocalDateTime finishDate = startDate.plusHours(hoursSum).plusMinutes(minutesSum);
-//        appointment.setFinishDate(finishDate);
-//
-//        return appointment;
-//    }
-    private LocalDateTime calculateAppointmentFinishDate(LocalDateTime startDate, List<AppointmentDetails> appointmentDetailsList) {
-        int hoursSum = 0;
-        int minutesSum = 0;
-        for (AppointmentDetails appointmentDetails : appointmentDetailsList) {
-            hoursSum += appointmentDetails.getWork().getHoursDuration();
-            minutesSum += appointmentDetails.getWork().getMinutesDuration();
-        }
-
-        return startDate.plusHours(hoursSum).plusMinutes(minutesSum);
     }
 
     private LocalDateTime calculateFinishDate(LocalDateTime startDate, List<Long> workIds) throws Exception {
