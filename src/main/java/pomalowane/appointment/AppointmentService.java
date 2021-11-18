@@ -164,6 +164,9 @@ public class AppointmentService {
             if (startDate.isEqual(appointment.getStartDate())) {
                 throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
             }
+            if (startDate.isBefore(appointment.getStartDate()) && endDate.isAfter(appointment.getStartDate())) {
+                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+            }
         }
     }
 
