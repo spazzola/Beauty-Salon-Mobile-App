@@ -20,17 +20,17 @@ public class ClientService {
 
 
     @Transactional
-    public Client createClient(ClientDto clientDto) {
+    public Client create(ClientDto clientDto) {
         validateClient(clientDto);
         Client client = fromDtoService.clientFromDto(clientDto);
         return clientDao.save(client);
     }
 
     @Transactional
-    public List<Client> createClients(List<ClientDto> clients) {
+    public List<Client> create(List<ClientDto> clients) {
         List<Client> resultList = new ArrayList<>();
         for (ClientDto clientDto : clients) {
-            Client client = createClient(clientDto);
+            Client client = create(clientDto);
             resultList.add(client);
         }
         return resultList;
