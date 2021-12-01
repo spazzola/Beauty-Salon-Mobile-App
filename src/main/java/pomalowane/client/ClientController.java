@@ -28,6 +28,15 @@ public class ClientController {
         return toDtoService.clientToDto(client);
     }
 
+    @PostMapping("/createAll")
+    public List<ClientDto> createClients(@RequestBody List<ClientDto> clientsDto) {
+        logger.info("Tworzenie klienta: " + clientsDto);
+        List<Client> clients = clientService.createClients(clientsDto);
+        logger.info("Utworzono klienta: " + clients);
+
+        return toDtoService.clientToDto(clients);
+    }
+
     @PutMapping("/update")
     public ClientDto updateClient(@RequestBody ClientDto clientDto) {
         logger.info("Aktualizowanie klienta: " + clientDto);
@@ -47,9 +56,9 @@ public class ClientController {
     }
 
     @PutMapping("/belated")
-    public ClientDto belated(@RequestParam Long clientId) throws Exception {
-        logger.info("Dodawanie spoznienia dla klienta o id: " + clientId);
-        Client client = clientService.increaseBelatedCounter(clientId);
+    public ClientDto belated(@RequestParam Long id) throws Exception {
+        logger.info("Dodawanie spoznienia dla klienta o id: " + id);
+        Client client = clientService.increaseBelatedCounter(id);
         logger.info("Dodano spoznienie dla klienta: " + client);
 
         return toDtoService.clientToDto(client);

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pomalowane.mappers.FromDtoService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,6 +24,16 @@ public class ClientService {
         validateClient(clientDto);
         Client client = fromDtoService.clientFromDto(clientDto);
         return clientDao.save(client);
+    }
+
+    @Transactional
+    public List<Client> createClients(List<ClientDto> clients) {
+        List<Client> resultList = new ArrayList<>();
+        for (ClientDto clientDto : clients) {
+            Client client = createClient(clientDto);
+            resultList.add(client);
+        }
+        return resultList;
     }
 
     @Transactional
