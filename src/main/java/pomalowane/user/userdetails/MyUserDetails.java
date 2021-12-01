@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 public class MyUserDetails implements UserDetails {
 
+    private Long id;
     private String userName;
     private String password;
     private String email;
@@ -26,6 +27,7 @@ public class MyUserDetails implements UserDetails {
     }
 
     public MyUserDetails(User user) {
+        this.id = user.getId();
         this.userName = user.getLogin();
         this.password = user.getPassword();
         this.name = user.getName();
@@ -57,6 +59,10 @@ public class MyUserDetails implements UserDetails {
 
     public String getSurname() {
         return surname;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     @Override

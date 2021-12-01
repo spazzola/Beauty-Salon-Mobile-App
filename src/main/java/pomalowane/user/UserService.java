@@ -72,7 +72,7 @@ public class UserService {
         }
         String role = myUserDetailsService.extractRole(userDetails.getAuthorities());
 
-        return new AuthenticationResponse(jwt, role, userDetails.getUsername(), userDetails.getName(), userDetails.getSurname());
+        return new AuthenticationResponse(userDetails.getId(), jwt, role, userDetails.getUsername(), userDetails.getName(), userDetails.getSurname());
     }
 
     @Transactional
