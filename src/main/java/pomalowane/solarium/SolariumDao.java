@@ -13,6 +13,6 @@ public interface SolariumDao extends JpaRepository<Solarium, Long> {
     @Query(value = "SELECT * FROM solariums s " +
             "WHERE MONTH(s.used_Date) = ?1 AND YEAR(s.used_Date) = ?2",
             nativeQuery = true)
-    Optional <Solarium> getMonthSolarium(int month, int year);
+    Solarium getMonthSolarium(int month, int year);
 
 }

@@ -19,11 +19,10 @@ public class SolariumService {
     private static final Logger logger = LogManager.getLogger(SolariumService.class);
 
     @Transactional
-    public Solarium useSolarium(SolariumDto solariumDto) throws Exception {
+    public Solarium useSolarium(SolariumDto solariumDto) {
         int month = solariumDto.getUsedDate().getMonth().getValue();
         int year = solariumDto.getUsedDate().getYear();
-        Solarium solarium = solariumDao.getMonthSolarium(month, year)
-                .orElseThrow(Exception::new);
+        Solarium solarium = solariumDao.getMonthSolarium(month, year);
         logger.info("Solarium przed uzyciem: " + solarium);
         if (solarium == null) {
             solarium = createNewSolarium(solariumDto);
@@ -35,8 +34,8 @@ public class SolariumService {
 
     @Transactional
     public Solarium getMonthSolarium(int month, int year) {
-        if (solariumDao.getMonthSolarium(month, year).isPresent()) {
-            return solariumDao.getMonthSolarium(month, year).get();
+        if (solariumDao.getMonthSolarium(month, year) != null) {
+            return solariumDao.getMonthSolarium(month, year);
         } else {
             return Solarium.builder()
                     .usedDate(LocalDateTime.of(year, month, 1, 0,0))
