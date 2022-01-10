@@ -140,6 +140,12 @@ public class AppointmentService {
         return appointmentDao.findAll();
     }
 
+    public List<Appointment> getIncomingAppointments(Long clientId) {
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(now);
+        return appointmentDao.findByStartDateGreaterThanAndClientId(now, clientId);
+    }
+
     private void validateAppointment(CreateAppointmentRequest createAppointmentRequest) throws Exception {
         int month = createAppointmentRequest.getStartDate().getMonth().getValue();
         int year = createAppointmentRequest.getStartDate().getYear();

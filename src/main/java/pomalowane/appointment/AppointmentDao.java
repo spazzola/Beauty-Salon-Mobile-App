@@ -1,5 +1,6 @@
 package pomalowane.appointment;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,5 +23,7 @@ public interface AppointmentDao extends JpaRepository<Appointment, Long> {
             "WHERE MONTH(a.start_Date) = ?1 AND YEAR(a.start_Date) = ?2 AND user_id = ?3",
         nativeQuery = true)
     List<Appointment> getUserMonthAppointments(int month, int year, Long user_id);
+
+    List<Appointment> findByStartDateGreaterThanAndClientId(LocalDateTime now, Long clientFk);
 
 }

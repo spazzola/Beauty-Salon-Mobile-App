@@ -38,6 +38,13 @@ public class AppointmentController {
 
     }
 
+    @GetMapping("/getIncomingAppointments")
+    public List<AppointmentDto> getIncomingAppointments(@RequestParam long clientId) {
+        List<Appointment> appointments = appointmentService.getIncomingAppointments(clientId);
+
+        return toDtoService.appointmentToDto(appointments);
+    }
+
     @PutMapping("/update")
     public AppointmentDto updateAppointment(@RequestBody UpdateAppointmentRequest updateAppointmentRequest) throws Exception {
         logger.info("Aktualizowanie wizyty: " + updateAppointmentRequest);
