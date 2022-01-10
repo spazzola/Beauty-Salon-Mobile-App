@@ -30,9 +30,9 @@ public class ClientController {
 
     @PostMapping("/createAll")
     public List<ClientDto> createClients(@RequestBody List<ClientDto> clientsDto) {
-        logger.info("Tworzenie klienta: " + clientsDto);
+        logger.info("Tworzenie klientów: " + clientsDto);
         List<Client> clients = clientService.create(clientsDto);
-        logger.info("Utworzono klienta: " + clients);
+        logger.info("Utworzono klientów: " + clients);
 
         return toDtoService.clientToDto(clients);
     }
