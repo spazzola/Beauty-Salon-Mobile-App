@@ -23,7 +23,8 @@ public class ClientService {
     public Client create(ClientDto clientDto) {
         validateClient(clientDto);
         Client client = fromDtoService.clientFromDto(clientDto);
-        return clientDao.save(client);
+        client.setVisible(true);
+        return saveIfNotExist(client);
     }
 
     @Transactional
@@ -84,10 +85,18 @@ public class ClientService {
             throw new IllegalArgumentException("Bad value of Client's name: " + clientDto.getName());
         }
         if (clientDto.getSurname() == null || clientDto.getSurname().equals("")) {
-            throw new IllegalArgumentException("Bad value of Client's surname: " + clientDto.getName());
+            throw new IllegalArgumentException("Bad value of Client's surname: " + clientDto.getSurname());
         }
-        if (clientDto.getPhoneNumber() == null || clientDto.getPhoneNumber().length() < 9) {
-            throw new IllegalArgumentException("Bad value of Client's phoneNumber: " + clientDto.getName());
+//        if (clientDto.getPhoneNumber() == null || clientDto.getPhoneNumber().length() < 9) {
+//            throw new IllegalArgumentException("Bad value of Client's phoneNumber: " + clientDto.getPhoneNumber());
+//        }
+    }
+
+    private Client saveIfNotExist(Client client) {
+        if (clientDao.findByPhoneNumber(client.getPhoneNumber()) == null) {
+            return clientDao.save(client);
+        } else {
+            return client;
         }
     }
 }
