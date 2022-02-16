@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface SmsDao extends JpaRepository<Sms, Long> {
 
     List<Sms> findByAppointmentId(Long id);
+    void deleteByAppointmentId(Long id);
 
 }
