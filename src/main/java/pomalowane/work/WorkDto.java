@@ -18,6 +18,7 @@ public class WorkDto {
     private Long id;
     private String name;
     private BigDecimal price;
+    private BigDecimal providedPrice;
     private int hoursDuration;
     private int minutesDuration;
     private String iconName;

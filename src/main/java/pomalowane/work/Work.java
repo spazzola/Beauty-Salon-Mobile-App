@@ -29,6 +29,9 @@ public class Work {
     @NotNull
     private BigDecimal price;
 
+    @Transient
+    private BigDecimal providedPrice;
+
     @NotNull
     private int hoursDuration;
 
@@ -42,6 +45,11 @@ public class Work {
     @OneToMany(mappedBy = "work")
     private List<AppointmentDetails> appointmentDetails;
 
+    @Override
+    public boolean equals(Object o) {
+        Work work = (Work) o;
+        return this.getId().equals(work.getId());
+    }
 
     @Override
     public String toString() {
@@ -49,6 +57,7 @@ public class Work {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
+                ", providedPrice=" + providedPrice +
                 ", hoursDuration=" + hoursDuration +
                 ", minutesDuration=" + minutesDuration +
                 ", iconName='" + iconName + '\'' +
