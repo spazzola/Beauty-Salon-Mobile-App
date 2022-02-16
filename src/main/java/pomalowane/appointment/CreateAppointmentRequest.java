@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pomalowane.work.WorkDto;
 
 import java.util.List;
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class CreateAppointmentRequest {
     private LocalDateTime startDate;
     private Long clientId;
     private Long employeeId;
-    private List<Long> workIds;
+    private List<WorkDto> works;
     private String note;
     private double percentageValueToAdd;
 
