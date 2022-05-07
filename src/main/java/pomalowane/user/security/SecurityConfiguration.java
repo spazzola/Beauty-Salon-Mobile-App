@@ -31,7 +31,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().authorizeRequests()
                 .antMatchers("/user/authenticate").permitAll()
-                //.antMatchers("/user/register").permitAll()
 //                .antMatchers("/user/**").permitAll()
 //                .antMatchers("/solarium/**").permitAll()
 //                .antMatchers("/report/**").permitAll()
@@ -39,8 +38,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/client/**").permitAll()
 //                .antMatchers("/work/**").permitAll()
 //                .antMatchers("/appointment/**").permitAll()
-                //.antMatchers("/user/register").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
+//                .antMatchers("/user/register").permitAll()
+//                .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
