@@ -85,7 +85,8 @@ public class SmsService {
         String formattedDate = formatDate(appointment.getStartDate());
 
         String text = "Gabinet NO I PIEKNIE przypomina o wizycie umówionej na dzień " + formattedDate + ". \n" +
-                "Serdecznie zapraszamy. \n Jesli nie mozesz nas odwiedzic poinformuj o tym minimum 48h przed wizytą.";
+                "Serdecznie zapraszamy. \n Jesli nie mozesz nas odwiedzic poinformuj o tym minimum 48h przed wizytą. \n\n" +
+                "Wiadomość została wygenerowana autometycznie, prosimy na nią nie odpowiadać.";
         String result = SerwerSMSApi.message.sendSms(client.getPhoneNumber(), text, "Pomalowane", options);
         System.out.println(result);
 
