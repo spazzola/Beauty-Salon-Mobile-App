@@ -293,8 +293,9 @@ public class AppointmentService {
 
     private BigDecimal addExtraAmountIfSunday(Appointment appointment, BigDecimal worksValue) {
         if (appointment.getStartDate().getDayOfWeek() == DayOfWeek.SUNDAY) {
-            BigDecimal amountToAdd = worksValue.multiply(BigDecimal.valueOf(2));
-            return worksValue.add(amountToAdd);
+            return worksValue.multiply(BigDecimal.valueOf(2));
+            //BigDecimal amountToAdd = worksValue.multiply(BigDecimal.valueOf(2));
+            //return worksValue.add(amountToAdd);
         } else {
             return worksValue;
         }
