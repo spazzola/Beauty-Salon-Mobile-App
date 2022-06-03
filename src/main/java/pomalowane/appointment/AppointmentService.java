@@ -3,6 +3,7 @@ package pomalowane.appointment;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pomalowane.appointment.appointmentdetails.AppointmentDetails;
@@ -14,6 +15,8 @@ import pomalowane.mappers.ToDtoService;
 import pomalowane.sms.SmsDao;
 import pomalowane.sms.SmsService;
 import pomalowane.user.UserDao;
+import pomalowane.vacation.Vacation;
+import pomalowane.vacation.VacationService;
 import pomalowane.work.CreateWorkRequest;
 import pomalowane.work.Work;
 import pomalowane.work.WorkDao;
@@ -26,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -42,6 +46,7 @@ public class AppointmentService {
     private FromDtoService fromDtoService;
     private ToDtoService toDtoService;
     private SmsDao smsDao;
+    private VacationService vacationService;
     private static final Logger logger = LogManager.getLogger(AppointmentService.class);
 
 
@@ -68,12 +73,15 @@ public class AppointmentService {
                 .map(WorkDto::getId)
                 .collect(Collectors.toList());
         LocalDateTime finishDate = calculateFinishDate(appointment.getStartDate(), workIds);
+
+        checkIfCollidesWithVacation(employee.getId(), createAppointmentRequest.getStartDate(), finishDate);
+
         appointment.setFinishDate(finishDate);
         calculateAndSetWorksSum(appointment, appointmentDetailsList);
 
         appointment.setAppointmentDetails(appointmentDetailsList);
 
-        smsService.setSmsReminder(appointment);
+        //smsService.setSmsReminder(appointment);
 
         return appointmentDao.save(appointment);
 
@@ -91,6 +99,8 @@ public class AppointmentService {
 
         List<Long> workIds = getWorkIdsFromRequest(updateAppointmentRequest);
         LocalDateTime finishDate = calculateFinishDate(updateAppointmentRequest.getStartDate(), workIds);
+
+        checkIfCollidesWithVacation(updateAppointmentRequest.getEmployeeId(), updateAppointmentRequest.getStartDate(), finishDate);
 
         validateDate(appointments, updateAppointmentRequest.getStartDate(), finishDate);
 
@@ -126,14 +136,14 @@ public class AppointmentService {
         appointment.setFinishDate(finishDate);
         calculateAndSetWorksSum(appointment, appointmentDetailsList);
 
-        smsService.updateSmsReminder(appointment);
+        //smsService.updateSmsReminder(appointment);
 
         return appointmentDao.save(appointment);
     }
 
     @Transactional
     public void deleteAppointment(Long id) {
-        smsDao.deleteByAppointmentId(id);
+        //smsDao.deleteByAppointmentId(id);
     }
 
     public List<Appointment> getMonthAppointments(int month, int year, Long userId) throws Exception {
@@ -206,6 +216,10 @@ public class AppointmentService {
     }
 
     private void validateDate(List<Appointment> appointments, LocalDateTime startDate, LocalDateTime endDate) {
+        checkIfCollidesWithAppointment(appointments, startDate, endDate);
+    }
+
+    private void checkIfCollidesWithAppointment(List<Appointment> appointments, LocalDateTime startDate, LocalDateTime endDate) {
         for (Appointment appointment : appointments) {
             if (startDate.isAfter(appointment.getStartDate()) && startDate.isBefore(appointment.getFinishDate())) {
                 throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
@@ -219,6 +233,36 @@ public class AppointmentService {
             if (startDate.isBefore(appointment.getStartDate()) && endDate.isAfter(appointment.getStartDate())) {
                 throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
             }
+        }
+    }
+
+    private void checkIfCollidesWithVacation(Long userId, LocalDateTime startDate, LocalDateTime finishDate) {
+        Optional<List<Vacation>> optionalVacationsList = vacationService.getDayVacations(userId,
+                                                                                startDate.getDayOfMonth(),
+                                                                                startDate.getMonthValue(),
+                                                                                startDate.getYear());
+        if (optionalVacationsList.isPresent()) {
+            List<Vacation> vacations = optionalVacationsList.get();
+
+            vacations.forEach(vacation -> {
+                String exceptionMessage = "An Appointment's date collides with Vacation's date: \n" +
+                        "Vacation: " + vacation + "\n " +
+                        "Appointment's startDate: " + startDate + "\n" +
+                        "Appointment's finishDate: " + finishDate;
+
+                if (startDate.isEqual(vacation.getStartDate())) {
+                    throw new IllegalArgumentException(exceptionMessage);
+                }
+                if (startDate.isAfter(vacation.getStartDate()) && startDate.isBefore(vacation.getFinishDate())) {
+                    throw new IllegalArgumentException(exceptionMessage);
+                }
+                if (startDate.isBefore(vacation.getStartDate()) && finishDate.isAfter(vacation.getStartDate())) {
+                    throw new IllegalArgumentException(exceptionMessage);
+                }
+                if (startDate.isBefore(vacation.getFinishDate()) && finishDate.isAfter(vacation.getFinishDate())) {
+                    throw new IllegalArgumentException(exceptionMessage);
+                }
+            });
         }
     }
 
