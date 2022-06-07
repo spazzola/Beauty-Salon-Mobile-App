@@ -7,6 +7,8 @@ import pomalowane.appointment.appointmentdetails.AppointmentDetails;
 import pomalowane.appointment.appointmentdetails.AppointmentDetailsDto;
 import pomalowane.client.Client;
 import pomalowane.client.ClientDto;
+import pomalowane.vacation.Vacation;
+import pomalowane.vacation.VacationDto;
 import pomalowane.work.Work;
 import pomalowane.work.WorkDto;
 import pomalowane.user.User;
@@ -106,6 +108,21 @@ public class ToDtoService {
     public List<UserDto> userToDto(List<User> users) {
         return users.stream()
                 .map(this::userToDto)
+                .collect(Collectors.toList());
+    }
+
+    public VacationDto vacationToDto(Vacation vacation) {
+        return VacationDto.builder()
+                .id(vacation.getId())
+                .startDate(vacation.getStartDate())
+                .finishDate(vacation.getFinishDate())
+                .employeeId(vacation.getEmployee().getId())
+                .build();
+    }
+
+    public List<VacationDto> vacationToDto(List<Vacation> vacations) {
+        return vacations.stream()
+                .map(this::vacationToDto)
                 .collect(Collectors.toList());
     }
 
