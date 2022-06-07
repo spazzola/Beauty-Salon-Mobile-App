@@ -1,10 +1,10 @@
 package pomalowane.vacation;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
-import pomalowane.appointment.Appointment;
-import pomalowane.appointment.AppointmentDto;
-import pomalowane.appointment.CreateAppointmentRequest;
+import pomalowane.mappers.ToDtoService;
 
 import java.util.List;
 
@@ -14,15 +14,25 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class VacationController {
 
+    private ToDtoService toDtoService;
     private VacationService vacationService;
 
-    @PostMapping("/create")
-    public void createAppointment(@RequestBody VacationDto vacationDto) throws Exception {
-        //logger.info("Tworzenie wizyty: " + createAppointmentRequest);
-        Vacation vacation = vacationService.createVacation(vacationDto);
-        //logger.info("Utworzono wizyte: " + appointment);
+    private static final Logger logger = LogManager.getLogger(VacationController.class);
 
-        System.out.println(vacation);
+    @PostMapping("/create")
+    public VacationDto createAppointment(@RequestBody VacationDto vacationDto) throws Exception {
+        logger.info("Tworzenie urlopu: " + vacationDto);
+        Vacation vacation = vacationService.createVacation(vacationDto);
+        logger.info("Utworzono urlop: " + vacation);
+
+        return toDtoService.vacationToDto(vacation);
+    }
+
+    @GetMapping("/getAll")
+    public List<VacationDto> getAll() {
+        List<Vacation> vacations = vacationService.getAllVacations();
+
+        return toDtoService.vacationToDto(vacations);
     }
 
 }
