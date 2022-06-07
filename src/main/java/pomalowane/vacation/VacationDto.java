@@ -1,15 +1,16 @@
 package pomalowane.vacation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import pomalowane.user.User;
 import pomalowane.user.UserDto;
 
 import java.time.LocalDateTime;
 
 @Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +24,6 @@ public class VacationDto {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     private LocalDateTime finishDate;
 
-    private Long employeeId;
+    private User employee;
 
 }

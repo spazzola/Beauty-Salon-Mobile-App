@@ -20,9 +20,9 @@ public class VacationController {
     private static final Logger logger = LogManager.getLogger(VacationController.class);
 
     @PostMapping("/create")
-    public VacationDto createAppointment(@RequestBody VacationDto vacationDto) throws Exception {
-        logger.info("Tworzenie urlopu: " + vacationDto);
-        Vacation vacation = vacationService.createVacation(vacationDto);
+    public VacationDto createAppointment(@RequestBody CreateVacationRequest createVacationRequest) throws Exception {
+        logger.info("Tworzenie urlopu: " + createVacationRequest);
+        Vacation vacation = vacationService.createVacation(createVacationRequest);
         logger.info("Utworzono urlop: " + vacation);
 
         return toDtoService.vacationToDto(vacation);

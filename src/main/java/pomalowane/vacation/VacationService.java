@@ -20,12 +20,12 @@ public class VacationService {
     private UserDao userDao;
 
     @Transactional
-    public Vacation createVacation(VacationDto vacationDto) {
-        User employee = userDao.getById(vacationDto.getEmployeeId());
+    public Vacation createVacation(CreateVacationRequest createVacationRequest) {
+        User employee = userDao.findById(createVacationRequest.getEmployeeId()).get();
 
         Vacation vacation = Vacation.builder()
-                .startDate(vacationDto.getStartDate())
-                .finishDate(vacationDto.getFinishDate())
+                .startDate(createVacationRequest.getStartDate())
+                .finishDate(createVacationRequest.getFinishDate())
                 .employee(employee)
                 .build();
 
