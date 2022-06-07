@@ -32,6 +32,12 @@ public class VacationService {
         return vacationDao.save(vacation);
     }
 
+    @Transactional
+    public List<Vacation> getAllVacations() {
+        return vacationDao.findAll();
+    }
+
+    @Transactional
     public Optional<List<Vacation>> getDayVacations(Long userId, int day, int month, int year) {
         return vacationDao.getVacationsByDate(userId, day, month, year);
     }
