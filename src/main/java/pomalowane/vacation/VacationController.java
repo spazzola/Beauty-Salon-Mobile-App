@@ -3,6 +3,7 @@ package pomalowane.vacation;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pomalowane.mappers.ToDtoService;
 
@@ -33,6 +34,24 @@ public class VacationController {
         List<Vacation> vacations = vacationService.getAllVacations();
 
         return toDtoService.vacationToDto(vacations);
+    }
+
+    @DeleteMapping("/delete")
+    public HttpStatus deleteAppointment(@RequestParam Long id) {
+        logger.info("Usuwanie urlopu o id: " + id);
+        vacationService.deleteVacation(id);
+        logger.info("Usunieto urlop");
+
+        return HttpStatus.OK;
+    }
+
+    @PutMapping("/update")
+    public VacationDto updateClient(@RequestBody UpdateVacationRequest updateVacationRequest) {
+        logger.info("Aktualizowanie urlopu: " + updateVacationRequest);
+        Vacation vacation = vacationService.updateVacation(updateVacationRequest);
+        logger.info("Zaktualizowano urlop: " + vacation);
+
+        return toDtoService.vacationToDto(vacation);
     }
 
 }
