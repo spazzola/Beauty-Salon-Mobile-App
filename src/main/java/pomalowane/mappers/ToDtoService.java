@@ -116,7 +116,7 @@ public class ToDtoService {
                 .id(vacation.getId())
                 .startDate(vacation.getStartDate())
                 .finishDate(vacation.getFinishDate())
-                .employeeId(vacation.getEmployee().getId())
+                .employee(vacation.getEmployee())
                 .build();
     }
 
