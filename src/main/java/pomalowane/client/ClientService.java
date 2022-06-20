@@ -78,15 +78,12 @@ public class ClientService {
     }
 
     private void validateClient(ClientDto clientDto) {
-        if (clientDao.findByPhoneNumber(clientDto.getPhoneNumber()) != null) {
-            throw new IllegalArgumentException("Client already exists");
-        }
-        if (clientDto.getName() == null || clientDto.getName().equals("")) {
+        if (clientDto.getName() == null) {
             throw new IllegalArgumentException("Bad value of Client's name: " + clientDto.getName());
         }
-        if (clientDto.getSurname() == null || clientDto.getSurname().equals("")) {
-            throw new IllegalArgumentException("Bad value of Client's surname: " + clientDto.getSurname());
-        }
+//        if (clientDto.getSurname() == null || clientDto.getSurname().equals("")) {
+//            throw new IllegalArgumentException("Bad value of Client's surname: " + clientDto.getSurname());
+//        }
 //        if (clientDto.getPhoneNumber() == null || clientDto.getPhoneNumber().length() < 9) {
 //            throw new IllegalArgumentException("Bad value of Client's phoneNumber: " + clientDto.getPhoneNumber());
 //        }

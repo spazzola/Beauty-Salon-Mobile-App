@@ -55,7 +55,7 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/delete")
-    public HttpStatus deleteAppointment(@RequestParam Long id) {
+    public HttpStatus deleteAppointment(@RequestParam Long id) throws Exception {
         logger.info("Usuwanie wizyty o id: " + id);
         appointmentService.deleteAppointment(id);
         logger.info("Usunieto wizyte");

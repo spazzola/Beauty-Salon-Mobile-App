@@ -12,6 +12,7 @@ import pomalowane.client.Client;
 import pomalowane.client.ClientDao;
 import pomalowane.mappers.FromDtoService;
 import pomalowane.mappers.ToDtoService;
+import pomalowane.sms.Sms;
 import pomalowane.sms.SmsDao;
 import pomalowane.sms.SmsService;
 import pomalowane.user.UserDao;
@@ -81,7 +82,7 @@ public class AppointmentService {
 
         appointment.setAppointmentDetails(appointmentDetailsList);
 
-        //smsService.setSmsReminder(appointment);
+        smsService.setSmsReminder(appointment);
 
         return appointmentDao.save(appointment);
 
@@ -136,14 +137,16 @@ public class AppointmentService {
         appointment.setFinishDate(finishDate);
         calculateAndSetWorksSum(appointment, appointmentDetailsList);
 
-        //smsService.updateSmsReminder(appointment);
+        smsService.updateSmsReminder(appointment);
 
         return appointmentDao.save(appointment);
     }
 
     @Transactional
-    public void deleteAppointment(Long id) {
-        //smsDao.deleteByAppointmentId(id);
+    public void deleteAppointment(Long id) throws Exception {
+        List<Sms> smsList = smsDao.findByAppointmentId(id);
+        smsService.deleteSmsReminders(smsList);
+        smsDao.deleteByAppointmentId(id);
     }
 
     public List<Appointment> getMonthAppointments(int month, int year, Long userId) throws Exception {
