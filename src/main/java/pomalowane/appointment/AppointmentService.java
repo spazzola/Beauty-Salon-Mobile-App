@@ -82,7 +82,7 @@ public class AppointmentService {
 
         appointment.setAppointmentDetails(appointmentDetailsList);
 
-        smsService.setSmsReminder(appointment);
+       // smsService.setSmsReminder(appointment);
 
         return appointmentDao.save(appointment);
 
@@ -103,7 +103,7 @@ public class AppointmentService {
 
         checkIfCollidesWithVacation(updateAppointmentRequest.getEmployeeId(), updateAppointmentRequest.getStartDate(), finishDate);
 
-        validateDate(appointments, updateAppointmentRequest.getStartDate(), finishDate);
+//        validateDate(appointments, updateAppointmentRequest.getStartDate(), finishDate);
 
         logger.info("Wizyta przed aktualizacja: " + appointment);
 
@@ -137,7 +137,7 @@ public class AppointmentService {
         appointment.setFinishDate(finishDate);
         calculateAndSetWorksSum(appointment, appointmentDetailsList);
 
-        smsService.updateSmsReminder(appointment);
+        //smsService.updateSmsReminder(appointment);
 
         return appointmentDao.save(appointment);
     }
@@ -181,7 +181,7 @@ public class AppointmentService {
 
         List<Long> workIds = getWorkIdsFromRequest(createAppointmentRequest);
         LocalDateTime finishDate = calculateFinishDate(createAppointmentRequest.getStartDate(), workIds);
-        validateDate(appointments, createAppointmentRequest.getStartDate(), finishDate);
+//        validateDate(appointments, createAppointmentRequest.getStartDate(), finishDate);
     }
 
     private void validateEmployee(CreateAppointmentRequest createAppointmentRequest) {
@@ -218,26 +218,26 @@ public class AppointmentService {
         return startDate.plusHours(hoursSum).plusMinutes(minutesSum);
     }
 
-    private void validateDate(List<Appointment> appointments, LocalDateTime startDate, LocalDateTime endDate) {
-        checkIfCollidesWithAppointment(appointments, startDate, endDate);
-    }
+//    private void validateDate(List<Appointment> appointments, LocalDateTime startDate, LocalDateTime endDate) {
+//        checkIfCollidesWithAppointment(appointments, startDate, endDate);
+//    }
 
-    private void checkIfCollidesWithAppointment(List<Appointment> appointments, LocalDateTime startDate, LocalDateTime endDate) {
-        for (Appointment appointment : appointments) {
-            if (startDate.isAfter(appointment.getStartDate()) && startDate.isBefore(appointment.getFinishDate())) {
-                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
-            }
-            if (endDate.isAfter(appointment.getStartDate()) && endDate.isBefore(appointment.getFinishDate())) {
-                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
-            }
-            if (startDate.isEqual(appointment.getStartDate())) {
-                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
-            }
-            if (startDate.isBefore(appointment.getStartDate()) && endDate.isAfter(appointment.getStartDate())) {
-                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
-            }
-        }
-    }
+//    private void checkIfCollidesWithAppointment(List<Appointment> appointments, LocalDateTime startDate, LocalDateTime endDate) {
+//        for (Appointment appointment : appointments) {
+//            if (startDate.isAfter(appointment.getStartDate()) && startDate.isBefore(appointment.getFinishDate())) {
+//                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+//            }
+//            if (endDate.isAfter(appointment.getStartDate()) && endDate.isBefore(appointment.getFinishDate())) {
+//                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+//            }
+//            if (startDate.isEqual(appointment.getStartDate())) {
+//                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+//            }
+//            if (startDate.isBefore(appointment.getStartDate()) && endDate.isAfter(appointment.getStartDate())) {
+//                throw new IllegalArgumentException("The date collides with another appointment with an id: " + appointment.getId());
+//            }
+//        }
+//    }
 
     private void checkIfCollidesWithVacation(Long userId, LocalDateTime startDate, LocalDateTime finishDate) {
         Optional<List<Vacation>> optionalVacationsList = vacationService.getDayVacations(userId,
